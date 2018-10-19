@@ -11,6 +11,11 @@
         body{
             margin : 0px;
         }
+
+        .selected {
+	        /* color: white; */
+	        background: green;
+        }
     </style>
  </head>
  <body>
@@ -57,6 +62,7 @@
                                 CENTER FREQUENCY
                             </td>
                         </tr>
+
                         <tr>
                             <td>
                                 <input type="text" id="oscillator2">
@@ -64,21 +70,27 @@
                             <td>
                                 MHz
                             </td>
+
                             <td>
-                                    <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                                    <span  class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
                             </td>
+
                             <td>
-                                     <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+
+                                     <span  class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
                             </td>
                         </tr>
+
                         <tr style="text-align: center">
-                            <td colspan="4">
+                            <!-- <td colspan="4">
                                 KHz MHz STEP 
-                                &nbsp;
+                                &nbsp; -->
+                            <td>
+                                <button class="mode">KHz</button>
+                                <button class="mode selected">MHz</button>
+                                <span>STEP</span>
                                 <input type="text" >
                             </td>
-                            
-
                         </tr>
 
                         <tr>
@@ -103,18 +115,21 @@
                     <td>
                         MHz
                     </td>
+
                     <td>
-                            <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
-                    </td>
+                            <span id="arrowUpButton" class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                   </td>
+
                     <td>
-                             <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                            <span id="arrowDownButton" class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
                     </td>
+                   
                 </tr>
                 <tr style="text-align: center">
                     <td colspan="4">
                         KHz MHz STEP 
                         &nbsp;
-                        <input type="text" >
+                        <input type="text" id="stepValue">
                     </td>
                 </tr>
                 

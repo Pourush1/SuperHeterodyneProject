@@ -56,14 +56,32 @@ const shiftForZigZagLine = 10;
 const heightToSubstract = 200;
 const startingWidthCoordinateWave1 = 1000;
 const heightCoordinate = canvas1.height;
+const firstWaveScale = 2;
+const secondWaveScale = 1.4;
+const thirdWaveScale = 3; //need to change this value
 
 window.onload = init();
 function init(){
     drawAxes();
-    drawWave( heightCoordinate , fixedFirstFrequencyPointWave1 , fixedSecondFrequencyPointWave1);
+    drawWave(firstWaveScale);
+    // setupUnitButtons();
     // getFrequencyIntensityValue();
     dataA.focus();
  }
+//  var unitButtons = document.querySelectorAll(".mode");
+//  console.log(unitButtons.length);
+
+//  function setupUnitButtons(){
+// 	for(var i = 0; i < unitButtons.length; i++){
+// 		unitButtons[i].addEventListener("click", function(){
+// 			unitButtons[0].classList.remove("selected");
+// 			unitButtons[1].classList.remove("selected");
+// 			this.classList.add("selected");
+// 		//	this.textContent === "MHz" ? numSquares = 3: numSquares = 6;
+// 		//	reset();
+// 		});
+// 	}
+// }
 
 
 //var widthPixel = 2;
@@ -76,23 +94,68 @@ function drawAxes(){
     ctx1.stroke();
 }
 //function to draw the first wave in the right most canvas
- function drawWave( heightCoordinate, point , secondPointValue){
+ function drawWave(scale){
     
-    var firstPoint =  (point - startingWidthCoordinateWave1) / 2;
-    var secondPoint =  (secondPointValue - startingWidthCoordinateWave1) / 2;
+    if(scale === 2){
 
-     ctx3.beginPath();
+        var firstPoint =  (fixedFirstFrequencyPointWave1 - startingWidthCoordinateWave1) / scale;
+        var secondPoint =  (fixedSecondFrequencyPointWave1 - startingWidthCoordinateWave1) / scale;
 
-     ctx3.moveTo(firstPoint, heightCoordinate);
-     ctx3.lineTo(firstPoint + shiftForZigZagLine , heightCoordinate - heightToSubstract);
-     ctx3.lineTo(secondPoint - shiftForZigZagLine , heightCoordinate - heightToSubstract);
-     ctx3.lineTo(secondPoint, heightCoordinate);
+        ctx3.beginPath();
 
-     ctx3.stroke();
+        ctx3.moveTo(firstPoint, heightCoordinate);
+        ctx3.lineTo(firstPoint + shiftForZigZagLine , heightCoordinate - heightToSubstract);
+        ctx3.lineTo(secondPoint - shiftForZigZagLine , heightCoordinate - heightToSubstract);
+        ctx3.lineTo(secondPoint, heightCoordinate);
+        ctx3.stroke();
 
-     ctx3.font = '15px serif';
-     ctx3.strokeText(point, firstPoint - shiftForZigZagLine , heightCoordinate - heightToSubstract );
-     ctx3.strokeText(secondPointValue, secondPoint - shiftForZigZagLine,  heightCoordinate - heightToSubstract );
+        ctx3.font = '15px serif';
+        ctx3.strokeText(fixedFirstFrequencyPointWave1, firstPoint - shiftForZigZagLine , heightCoordinate - heightToSubstract );
+        ctx3.strokeText(fixedSecondFrequencyPointWave1, secondPoint - shiftForZigZagLine,  heightCoordinate - heightToSubstract );
+    }
+
+    else if (scale === 1.4) {
+        var point = Math.abs(fixedFirstFrequencyPointWave1 - oscillator1.value);
+        var secondPoint = Math.abs(fixedSecondFrequencyPointWave1 - oscillator1.value);
+
+        var pointA = (point - 0) / scale;
+        var pointB = (secondPoint - 0) / scale;
+
+        ctx2.beginPath();
+
+        ctx2.moveTo(pointA, heightCoordinate);
+        ctx2.lineTo(pointA + shiftForZigZagLine , heightCoordinate -heightToSubstract);
+        ctx2.lineTo(pointB - shiftForZigZagLine , heightCoordinate - heightToSubstract);
+        ctx2.lineTo(pointB, heightCoordinate);
+
+        ctx2.stroke();
+
+        ctx2.font = '15px serif';
+        ctx2.strokeText(point, pointA + shiftForZigZagLine , heightCoordinate - heightToSubstract );
+        ctx2.strokeText(secondPoint, pointB - shiftForZigZagLine , heightCoordinate - heightToSubstract );
+    }
+
+    else if (scale === 3){
+         // fixed values 110 and 0 for the low pass flter
+        var point = Math.abs(110 - oscillator2.value);
+        var secondPoint = Math.abs(0 - oscillator2.value);
+      
+        var pointA = (point - 0) * scale;
+        var pointB = (secondPoint - 0) *  scale;
+
+        ctx1.beginPath();
+
+        ctx1.moveTo(pointA, heightCoordinate);
+        ctx1.lineTo(pointA + shiftForZigZagLine , heightCoordinate - heightToSubstract);
+        ctx1.lineTo(pointB - shiftForZigZagLine , heightCoordinate - heightToSubstract);
+        ctx1.lineTo(pointB, heightCoordinate);
+
+        ctx1.stroke();
+
+        ctx1.font = '15px serif';
+        ctx1.strokeText(point, pointA + shiftForZigZagLine , heightCoordinate - heightToSubstract );
+        ctx1.strokeText(secondPoint, pointB - shiftForZigZagLine , heightCoordinate - heightToSubstract );
+    }
    
 }
 
@@ -115,7 +178,13 @@ function getFrequencyIntensityValue(){
     ctx3.strokeText(frequencyValue, signalPoint, intensityAmplitude);
 }
 
-function drawOscillatorFrequency(){
+function drawOscillatorFrequency(){ 
+    reset();
+    getFrequencyIntensityValue();
+    drawWave(secondWaveScale);
+    shiftSourceFrequency();
+    drawFixedLowPassFilter();
+
     var Oscillator1frequencyValue = oscillator1.value;
     console.log(Oscillator1frequencyValue);
     var oscillatorPoint =  (Oscillator1frequencyValue - startingWidthCoordinateWave1) / 2;
@@ -126,7 +195,7 @@ function drawOscillatorFrequency(){
     ctx3.lineTo(oscillatorPoint, 100);
     ctx3.stroke();
 
-    drawWave2();
+   
 
     // var Oscillator1point = frequencyValue -  Oscillator1frequencyValue; 
     // console.log(Oscillator1point);
@@ -135,44 +204,27 @@ function drawOscillatorFrequency(){
 
 function drawOscillator2Frequency(){
     var Oscillator2frequencyValue = oscillator2.value;
-    var oscillatorPoint =  (Oscillator2frequencyValue - 0) / 1.4;
+    var oscillatorPoint =  (Oscillator2frequencyValue - 0) / secondWaveScale;
     
    
     ctx2.moveTo(oscillatorPoint , heightCoordinate);
     ctx2.lineTo(oscillatorPoint, heightCoordinate - heightToSubstract);
     ctx2.stroke();
 
-    drawWave3();
+    drawWave(thirdWaveScale);
+    shiftSourceFrequencyAccordingToOscillator2();
+    drawFixedFilter2();
 
-    // var Oscillator1point = frequencyValue -  Oscillator1frequencyValue; 
-    // console.log(Oscillator1point);
 
 }
 var shiftedPoint; //This global variable is used to pass the 
 
-function drawWave2(){
-    var point = Math.abs(fixedFirstFrequencyPointWave1 - oscillator1.value);
-    var secondPoint = Math.abs(fixedSecondFrequencyPointWave1 - oscillator1.value);
-
-    var pointA = (point - 0) / 1.4;
-    var pointB = (secondPoint - 0) / 1.4;
-
-    ctx2.beginPath();
-
-     ctx2.moveTo(pointA, heightCoordinate);
-     ctx2.lineTo(pointA + shiftForZigZagLine , heightCoordinate -heightToSubstract);
-     ctx2.lineTo(pointB - shiftForZigZagLine , heightCoordinate - heightToSubstract);
-     ctx2.lineTo(pointB, heightCoordinate);
-
-     ctx2.stroke();
-
-     ctx2.font = '15px serif';
-     ctx2.strokeText(point, pointA + shiftForZigZagLine , heightCoordinate - heightToSubstract );
-     ctx2.strokeText(secondPoint, pointB - shiftForZigZagLine , heightCoordinate - heightToSubstract );
+function shiftSourceFrequency(){
+   
 
        //logic to shift the source frequency point
        shiftedPoint = Math.abs(dataA.value - oscillator1.value);
-       var exactShiftedPointToScale = shiftedPoint / 1.4;
+       var exactShiftedPointToScale = shiftedPoint / secondWaveScale;
        ctx2.moveTo(exactShiftedPointToScale, heightCoordinate);
        var shiftedIntensityValue = intensityA.value * heightPixel;
        ctx2.lineTo(exactShiftedPointToScale, shiftedIntensityValue);
@@ -182,11 +234,11 @@ function drawWave2(){
        ctx2.font = '15px serif';
        ctx2.strokeText(shiftedPoint, exactShiftedPointToScale, shiftedIntensityValue );
 
-     drawFixedLowPassFilter();
+    
     }
 
      function drawFixedLowPassFilter(){
-     var filterPoint = 110/1.4 ; // fixed low pass filter point 110
+     var filterPoint = 110/secondWaveScale ; // fixed low pass filter point 110
 
      //logic to draw the fix low pass filter, always in the same position
      ctx2.moveTo(0,heightCoordinate);
@@ -204,28 +256,11 @@ function drawWave2(){
 
    
 
-function drawWave3(){
-    // fixed values 110 and 0 for the low pass flter
-    var point = Math.abs(110 - oscillator2.value);
-    var secondPoint = Math.abs(0 - oscillator2.value);
+function shiftSourceFrequencyAccordingToOscillator2(){
     
-
-    var pointA = (point - 0) * 2;
-    var pointB = (secondPoint - 0) *  2;
-
-    ctx1.beginPath();
-
-     ctx1.moveTo(pointA, heightCoordinate);
-     ctx1.lineTo(pointA + shiftForZigZagLine , heightCoordinate - heightToSubstract);
-     ctx1.lineTo(pointB - shiftForZigZagLine , heightCoordinate - heightToSubstract);
-     ctx1.lineTo(pointB, heightCoordinate);
-
-     ctx1.stroke();
-
-     //logic to shift the source frequency point
+    //logic to shift the source frequency point
      var finalShiftedPoint = Math.abs(shiftedPoint - oscillator2.value);
-     console.log(finalShiftedPoint);
-     var exactShiftedPointToScale = finalShiftedPoint * 2;
+     var exactShiftedPointToScale = finalShiftedPoint * thirdWaveScale;
      ctx1.moveTo(exactShiftedPointToScale, heightCoordinate);
      var shiftedIntensityValue = intensityA.value * heightPixel;
      ctx1.lineTo(exactShiftedPointToScale, shiftedIntensityValue);
@@ -234,8 +269,6 @@ function drawWave3(){
      //logic to print the text
      ctx1.font = '15px serif';
      ctx1.strokeText(finalShiftedPoint, exactShiftedPointToScale, shiftedIntensityValue );
-
-     drawFixedFilter2();
 }
 
 function drawFixedFilter2(){
@@ -248,6 +281,18 @@ function drawFixedFilter2(){
     ctx1.lineTo(filterPoint2 + 5, heightToSubstract);
     ctx1.lineTo(filterPoint2 + 5, heightCoordinate);
     ctx1.stroke();
+}
+
+var arrowUPButton = document.querySelector("#arrowUpButton");
+var arrowDownButton = document.querySelector("#arrowDownButton");
+var stepValue = document.querySelector("#stepValue");
+
+arrowUPButton.addEventListener('click', increaseFrequencyByStep);
+// arrowDownButton.addEventListener('click' , decreaseFrequencyByStep);
+
+function increaseFrequencyByStep(){
+    oscillator1.value = Number(stepValue.value) + Number(oscillator1.value);;
+   
 }
 
 
