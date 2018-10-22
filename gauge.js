@@ -13,7 +13,6 @@ pointDrawStart();
 var button = document.querySelector('#submit');
 button.addEventListener('click', pointDrawStart);
 
-
 function pointDrawStart() {
     ctx4.clearRect(0, 0, canvas4.width, canvas4.height);
     ctx4.beginPath();
@@ -30,10 +29,8 @@ function pointDrawStart() {
     var drawLineAtpoint = function (point) {
         var angleA = 226,
             singlePointAngleIncrease = (316 - 226) / 10;
-
         return angleA + point * singlePointAngleIncrease;
     }
-
 
     for (i = 0; i <= 3; i++) {
         var point = pointName.split(','),
@@ -48,7 +45,6 @@ function pointDrawStart() {
             ctx4.stroke();
         }
     }
-
 
     //add point value at the co-ordinate defined
     ctx4.font = '15px serif';
