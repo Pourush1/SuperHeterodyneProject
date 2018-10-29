@@ -7,10 +7,11 @@ var ctx2 = canvas2.getContext('2d');
 var ctx3 = canvas3.getContext('2d');
 
 // This is the source of frequency and intensity from the Source Table
-var dataA = document.querySelector('.frequencyA');
-var intensityA = document.querySelector('.intensityA');
+var dataA = document.querySelectorAll('.frequency');
+var intensityA = document.querySelectorAll('.intensity');
 var button = document.querySelector('#submit');
 button.addEventListener('click', getFrequencyIntensityValue);
+
 
 //This is the source of the first Oscillator value
 var oscillator1 = document.querySelector('#oscillator1');
@@ -33,20 +34,40 @@ function reset(){
     init();
 }
 
-dataA.onchange = function(){
+
+var frequencyValues = {};
+function getFrequency(){
+
+    var frequencyValue = this.value;
     if(this.value != "" || this.value.length > 0){
         this.disabled = true;
-        this.classList.remove("frequencyA");
-    }
+  }
+  frequencyValues.frequency = frequencyValue;
+  
+} 
+  
+var intensityValues = {};
+function getIntensity(){
 
-}
-
-intensityA.onchange = function(){
+    var intensityValue = this.value;
     if(this.value != "" || this.value.length > 0){
         this.disabled = true;
-        this.classList.remove("intensityA");
-    }
-}
+  }
+  intensityValues.intensity = intensityValue;
+
+  getFrequencyIntensityValue();
+  pointDrawStart();
+  
+} 
+
+  dataA.forEach(function(e){
+  e.addEventListener('change', getFrequency);
+  })
+
+  intensityA.forEach(function(e){
+      e.addEventListener('change',getIntensity);
+  })
+
 
 //constant points in the window
 const heightPixel = 50; // 1 pixel equivalent to 50 intensity
@@ -58,7 +79,7 @@ const startingWidthCoordinateWave1 = 1000;
 const heightCoordinate = canvas1.height;
 const firstWaveScale = 2;
 const secondWaveScale = 1.4;
-const thirdWaveScale = 3; //need to change this value
+const thirdWaveScale = 2.1; //need to change this value
 
 window.onload = init();
 function init(){
@@ -66,7 +87,7 @@ function init(){
     drawWave(firstWaveScale);
     // setupUnitButtons();
     // getFrequencyIntensityValue();
-    dataA.focus();
+    // dataA.focus();
  }
 //  var unitButtons = document.querySelectorAll(".mode");
 //  console.log(unitButtons.length);
@@ -135,9 +156,9 @@ function drawAxes(){
         ctx2.strokeText(secondPoint, pointB - shiftForZigZagLine , heightCoordinate - heightToSubstract );
     }
 
-    else if (scale === 3){
+    else if (scale === 2.1){
          // fixed values 110 and 0 for the low pass flter
-        var point = Math.abs(110 - oscillator2.value);
+        var point = Math.abs((110 * 10 - oscillator2.value * 10) / 10 );
         var secondPoint = Math.abs(0 - oscillator2.value);
       
         var pointA = (point - 0) * scale;
@@ -161,10 +182,9 @@ function drawAxes(){
 
 
 function getFrequencyIntensityValue(){
-    var frequencyValue = dataA.value;
-    console.log(frequencyValue);
-    var intensityValue = intensityA.value;
-    console.log(intensityValue);
+
+   var frequencyValue =  frequencyValues['frequency'];
+   var intensityValue =  intensityValues['intensity'];
 
     var signalPoint = (frequencyValue - startingWidthCoordinateWave1) / 2 ;
     var intensityAmplitude = intensityValue * heightPixel;
@@ -195,14 +215,14 @@ function drawOscillatorFrequency(){
     ctx3.lineTo(oscillatorPoint, 100);
     ctx3.stroke();
 
-   
-
-    // var Oscillator1point = frequencyValue -  Oscillator1frequencyValue; 
-    // console.log(Oscillator1point);
-
 }
 
 function drawOscillator2Frequency(){
+    drawOscillatorFrequency();
+    drawWave(thirdWaveScale);
+    shiftSourceFrequencyAccordingToOscillator2();
+    drawFixedFilter2();
+
     var Oscillator2frequencyValue = oscillator2.value;
     var oscillatorPoint =  (Oscillator2frequencyValue - 0) / secondWaveScale;
     
@@ -210,23 +230,20 @@ function drawOscillator2Frequency(){
     ctx2.moveTo(oscillatorPoint , heightCoordinate);
     ctx2.lineTo(oscillatorPoint, heightCoordinate - heightToSubstract);
     ctx2.stroke();
-
-    drawWave(thirdWaveScale);
-    shiftSourceFrequencyAccordingToOscillator2();
-    drawFixedFilter2();
-
-
 }
+
 var shiftedPoint; //This global variable is used to pass the 
 
 function shiftSourceFrequency(){
    
 
        //logic to shift the source frequency point
-       shiftedPoint = Math.abs(dataA.value - oscillator1.value);
+    //    shiftedPoint = Math.abs(dataA.value - oscillator1.value);
+       shiftedPoint = Math.abs(frequencyValues['frequency'] - oscillator1.value);
        var exactShiftedPointToScale = shiftedPoint / secondWaveScale;
        ctx2.moveTo(exactShiftedPointToScale, heightCoordinate);
-       var shiftedIntensityValue = intensityA.value * heightPixel;
+      // var shiftedIntensityValue = intensityA.value * heightPixel;
+       var shiftedIntensityValue = intensityValues['intensity'] * heightPixel;
        ctx2.lineTo(exactShiftedPointToScale, shiftedIntensityValue);
        ctx2.stroke();
   
@@ -259,10 +276,11 @@ function shiftSourceFrequency(){
 function shiftSourceFrequencyAccordingToOscillator2(){
     
     //logic to shift the source frequency point
-     var finalShiftedPoint = Math.abs(shiftedPoint - oscillator2.value);
+     var finalShiftedPoint = Math.abs((shiftedPoint * 10 - oscillator2.value * 10) / 10 );
      var exactShiftedPointToScale = finalShiftedPoint * thirdWaveScale;
      ctx1.moveTo(exactShiftedPointToScale, heightCoordinate);
-     var shiftedIntensityValue = intensityA.value * heightPixel;
+   //  var shiftedIntensityValue = intensityA.value * heightPixel;
+     var shiftedIntensityValue = intensityValues['intensity'] * heightPixel;
      ctx1.lineTo(exactShiftedPointToScale, shiftedIntensityValue);
      ctx1.stroke();
 
@@ -288,12 +306,170 @@ var arrowDownButton = document.querySelector("#arrowDownButton");
 var stepValue = document.querySelector("#stepValue");
 
 arrowUPButton.addEventListener('click', increaseFrequencyByStep);
-// arrowDownButton.addEventListener('click' , decreaseFrequencyByStep);
+arrowDownButton.addEventListener('click' , decreaseFrequencyByStep);
 
 function increaseFrequencyByStep(){
-    oscillator1.value = Number(stepValue.value) + Number(oscillator1.value);;
-   
+    oscillator1.value = Number(stepValue.value) + Number(oscillator1.value) ;
+}
+
+function decreaseFrequencyByStep(){
+    oscillator1.value =  Number(oscillator1.value) - Number(stepValue.value) ;
 }
 
 
 
+
+
+    var canvas4 = document.querySelector('#canvas4'),
+    ctx4 = canvas4.getContext("2d"),
+    x1 = 145,
+    y1 = 200,
+    r = 143,
+    headlen = 10,
+    theta, //angle set according to intensity range from 0 - 10 i.e min 0 = 226 and max 10 = 316
+    cosA,
+    sinA,
+    pointName = 'A,B,C,D';
+
+
+// var button = document.querySelector('#submit');
+// button.addEventListener('click', pointDrawStart);
+
+function pointDrawStart() {
+    ctx4.clearRect(0, 0, canvas4.width, canvas4.height);
+    ctx4.beginPath();
+    ctx4.arc(150, 200, 150, 1.25 * Math.PI, 1.75 * Math.PI);
+
+    //draw point indicator
+    drawPointIndicator(44, 95, headlen, 226)
+    drawPointIndicator(147.5, 50, headlen, 271)
+    drawPointIndicator(255.5, 95, headlen, 316)
+    ctx4.stroke();
+    //line draw with arrow
+    ctx4.moveTo(x1, y1);
+
+    var drawLineAtpoint = function (point) {
+        var angleA = 226,
+            singlePointAngleIncrease = (316 - 226) / 10;
+        return angleA + point * singlePointAngleIncrease;
+    }
+
+    for (i = 0; i <= 3; i++) {
+        var point = pointName.split(','),
+             pointValue = document.querySelector('#intensity' + point[i]).value;
+            // pointValue = intensityValues['intensity'];
+            
+        if (pointValue != "") {
+            theta = drawLineAtpoint(pointValue);
+            cosA = Math.cos(Math.PI * theta / 180.0);
+            sinA = Math.sin(Math.PI * theta / 180.0);
+
+            //draw line with arrow
+            lineArrow(x1, y1, x1 + r * cosA, y1 + r * sinA, headlen, point[i]);
+            ctx4.stroke();
+        }
+    }
+
+    //add point value at the co-ordinate defined
+    ctx4.font = '15px serif';
+    ctx4.strokeText(0, 38, 109);
+    ctx4.strokeText(5, 138, 45);
+    ctx4.strokeText(10, 252, 109);
+
+    function lineArrow(fromx, fromy, tox, toy, headlen, pointName) { // draw line along with pointer
+        var dx = tox - fromx,
+            dy = toy - fromy,
+            angle = Math.atan2(dy, dx);
+
+        ctx4.moveTo(fromx, fromy);
+        ctx4.lineTo(tox, toy);
+        ctx4.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
+        ctx4.moveTo(tox, toy);
+        ctx4.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
+        ctx4.font = '15px serif';
+        ctx4.strokeText(pointName, tox - headlen * Math.cos(angle - Math.PI / 6), toy + 8 - headlen * Math.sin(angle - Math.PI / 6));
+    }
+
+    function drawPointIndicator(x1, y1, r, angle) { // draw point indicator at 0 - 5 - 10
+        ctx4.moveTo(x1, y1);
+        ctx4.lineTo(x1 + r * Math.cos(Math.PI * angle / 180.0), y1 + r * Math.sin(Math.PI * angle / 180.0))
+    }
+}
+
+
+// logic to draw the intensity pointer
+var canvas4 = document.querySelector('#canvas4'),
+ctx4 = canvas4.getContext("2d"),
+x1 = 145,
+y1 = 200,
+r = 143,
+headlen = 10,
+theta, //angle set according to intensity range from 0 - 10 i.e min 0 = 226 and max 10 = 316
+cosA,
+sinA,
+pointName = 'A,B,C,D';
+
+pointDrawStart();
+// var button = document.querySelector('#submit');
+// button.addEventListener('click', pointDrawStart);
+
+function pointDrawStart() {
+ctx4.clearRect(0, 0, canvas4.width, canvas4.height);
+ctx4.beginPath();
+ctx4.arc(150, 200, 150, 1.25 * Math.PI, 1.75 * Math.PI);
+
+//draw point indicator
+drawPointIndicator(44, 95, headlen, 226)
+drawPointIndicator(147.5, 50, headlen, 271)
+drawPointIndicator(255.5, 95, headlen, 316)
+ctx4.stroke();
+//line draw with arrow
+ctx4.moveTo(x1, y1);
+
+var drawLineAtpoint = function (point) {
+    var angleA = 226,
+    singlePointAngleIncrease = (316 - 226) / 10;
+    return angleA + point * singlePointAngleIncrease;
+}
+
+for (i = 0; i <= 3; i++) {
+    var point = pointName.split(','),
+         pointValue = document.querySelector('#intensity' + point[i]).value;
+      //  pointValue = 5;
+        
+    if (pointValue != "") {
+        theta = drawLineAtpoint(pointValue);
+        cosA = Math.cos(Math.PI * theta / 180.0);
+        sinA = Math.sin(Math.PI * theta / 180.0);
+
+        //draw line with arrow
+        lineArrow(x1, y1, x1 + r * cosA, y1 + r * sinA, headlen, point[i]);
+        ctx4.stroke();
+    }
+}
+
+//add point value at the co-ordinate defined
+ctx4.font = '15px serif';
+ctx4.strokeText(0, 38, 109);
+ctx4.strokeText(5, 138, 45);
+ctx4.strokeText(10, 252, 109);
+
+function lineArrow(fromx, fromy, tox, toy, headlen, pointName) { // draw line along with pointer
+    var dx = tox - fromx,
+        dy = toy - fromy,
+        angle = Math.atan2(dy, dx);
+
+    ctx4.moveTo(fromx, fromy);
+    ctx4.lineTo(tox, toy);
+    ctx4.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
+    ctx4.moveTo(tox, toy);
+    ctx4.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
+    ctx4.font = '15px serif';
+    ctx4.strokeText(pointName, tox - headlen * Math.cos(angle - Math.PI / 6), toy + 8 - headlen * Math.sin(angle - Math.PI / 6));
+}
+
+function drawPointIndicator(x1, y1, r, angle) { // draw point indicator at 0 - 5 - 10
+    ctx4.moveTo(x1, y1);
+    ctx4.lineTo(x1 + r * Math.cos(Math.PI * angle / 180.0), y1 + r * Math.sin(Math.PI * angle / 180.0))
+}
+}
