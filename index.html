@@ -9,7 +9,6 @@
   <style type="text/css">
         canvas{
             border: 1px solid black;
-            /* background : red; */
         }
         body{
             margin : 0px;
@@ -187,7 +186,11 @@
                     <td colspan="4">
                         KHz MHz STEP 
                         &nbsp;
-                        <input type="text" id="stepValue">
+                        <!-- <input type="text" id="stepValue"> -->
+                        <select id="stepValue">
+                            <option>5</option>
+                            <option>10</option>
+                        </select>
                     </td>
                 </tr>
                 
@@ -204,7 +207,7 @@
 
 <button id= "resetButton">RESET</button>
 
-    <script src= "canvas.js"></script>
+<script src= "canvas.js"></script>
     
 </body>
 </html>

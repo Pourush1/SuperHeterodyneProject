@@ -56,7 +56,7 @@ function getIntensity(){
   intensityValues.intensity = intensityValue;
 
   getFrequencyIntensityValue();
-  pointDrawStart();
+//   pointDrawStart();
   
 } 
 
@@ -110,9 +110,16 @@ function init(){
 function drawAxes(){
     ctx1.beginPath();
     ctx1.lineTo(0, 300);
-    // c.moveTo(1490, 290);
     ctx1.lineTo(500,300);
     ctx1.stroke();
+
+    ctx2.moveTo(0,300);
+    ctx2.lineTo(500, 300);
+    ctx2.stroke();
+
+    ctx3.moveTo(0,300);
+    ctx3.lineTo(500, 300);
+    ctx3.stroke();    
 }
 //function to draw the first wave in the right most canvas
  function drawWave(scale){
@@ -277,6 +284,10 @@ function shiftSourceFrequencyAccordingToOscillator2(){
     
     //logic to shift the source frequency point
      var finalShiftedPoint = Math.abs((shiftedPoint * 10 - oscillator2.value * 10) / 10 );
+
+     if(finalShiftedPoint > 10.695 && finalShiftedPoint < 10.705){
+         pointDrawStart();
+     }
      var exactShiftedPointToScale = finalShiftedPoint * thirdWaveScale;
      ctx1.moveTo(exactShiftedPointToScale, heightCoordinate);
    //  var shiftedIntensityValue = intensityA.value * heightPixel;
@@ -331,10 +342,6 @@ function decreaseFrequencyByStep(){
     sinA,
     pointName = 'A,B,C,D';
 
-
-// var button = document.querySelector('#submit');
-// button.addEventListener('click', pointDrawStart);
-
 function pointDrawStart() {
     ctx4.clearRect(0, 0, canvas4.width, canvas4.height);
     ctx4.beginPath();
@@ -354,10 +361,10 @@ function pointDrawStart() {
         return angleA + point * singlePointAngleIncrease;
     }
 
-    for (i = 0; i <= 3; i++) {
-        var point = pointName.split(','),
-             pointValue = document.querySelector('#intensity' + point[i]).value;
-            // pointValue = intensityValues['intensity'];
+    // for (i = 0; i <= 3; i++) {
+    //     var point = pointName.split(','),
+    //          pointValue = document.querySelector('#intensity' + point[i]).value;
+         pointValue = intensityValues['intensity'];
             
         if (pointValue != "") {
             theta = drawLineAtpoint(pointValue);
@@ -365,10 +372,10 @@ function pointDrawStart() {
             sinA = Math.sin(Math.PI * theta / 180.0);
 
             //draw line with arrow
-            lineArrow(x1, y1, x1 + r * cosA, y1 + r * sinA, headlen, point[i]);
+            lineArrow(x1, y1, x1 + r * cosA, y1 + r * sinA, headlen, "B");
             ctx4.stroke();
         }
-    }
+    // }
 
     //add point value at the co-ordinate defined
     ctx4.font = '15px serif';
@@ -394,82 +401,4 @@ function pointDrawStart() {
         ctx4.moveTo(x1, y1);
         ctx4.lineTo(x1 + r * Math.cos(Math.PI * angle / 180.0), y1 + r * Math.sin(Math.PI * angle / 180.0))
     }
-}
-
-
-// logic to draw the intensity pointer
-var canvas4 = document.querySelector('#canvas4'),
-ctx4 = canvas4.getContext("2d"),
-x1 = 145,
-y1 = 200,
-r = 143,
-headlen = 10,
-theta, //angle set according to intensity range from 0 - 10 i.e min 0 = 226 and max 10 = 316
-cosA,
-sinA,
-pointName = 'A,B,C,D';
-
-pointDrawStart();
-// var button = document.querySelector('#submit');
-// button.addEventListener('click', pointDrawStart);
-
-function pointDrawStart() {
-ctx4.clearRect(0, 0, canvas4.width, canvas4.height);
-ctx4.beginPath();
-ctx4.arc(150, 200, 150, 1.25 * Math.PI, 1.75 * Math.PI);
-
-//draw point indicator
-drawPointIndicator(44, 95, headlen, 226)
-drawPointIndicator(147.5, 50, headlen, 271)
-drawPointIndicator(255.5, 95, headlen, 316)
-ctx4.stroke();
-//line draw with arrow
-ctx4.moveTo(x1, y1);
-
-var drawLineAtpoint = function (point) {
-    var angleA = 226,
-    singlePointAngleIncrease = (316 - 226) / 10;
-    return angleA + point * singlePointAngleIncrease;
-}
-
-for (i = 0; i <= 3; i++) {
-    var point = pointName.split(','),
-         pointValue = document.querySelector('#intensity' + point[i]).value;
-      //  pointValue = 5;
-        
-    if (pointValue != "") {
-        theta = drawLineAtpoint(pointValue);
-        cosA = Math.cos(Math.PI * theta / 180.0);
-        sinA = Math.sin(Math.PI * theta / 180.0);
-
-        //draw line with arrow
-        lineArrow(x1, y1, x1 + r * cosA, y1 + r * sinA, headlen, point[i]);
-        ctx4.stroke();
-    }
-}
-
-//add point value at the co-ordinate defined
-ctx4.font = '15px serif';
-ctx4.strokeText(0, 38, 109);
-ctx4.strokeText(5, 138, 45);
-ctx4.strokeText(10, 252, 109);
-
-function lineArrow(fromx, fromy, tox, toy, headlen, pointName) { // draw line along with pointer
-    var dx = tox - fromx,
-        dy = toy - fromy,
-        angle = Math.atan2(dy, dx);
-
-    ctx4.moveTo(fromx, fromy);
-    ctx4.lineTo(tox, toy);
-    ctx4.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
-    ctx4.moveTo(tox, toy);
-    ctx4.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
-    ctx4.font = '15px serif';
-    ctx4.strokeText(pointName, tox - headlen * Math.cos(angle - Math.PI / 6), toy + 8 - headlen * Math.sin(angle - Math.PI / 6));
-}
-
-function drawPointIndicator(x1, y1, r, angle) { // draw point indicator at 0 - 5 - 10
-    ctx4.moveTo(x1, y1);
-    ctx4.lineTo(x1 + r * Math.cos(Math.PI * angle / 180.0), y1 + r * Math.sin(Math.PI * angle / 180.0))
-}
 }
