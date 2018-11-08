@@ -1,16 +1,43 @@
 var canvas1 = document.querySelector('#canvas1');
 var canvas2 = document.querySelector('#canvas2');
 var canvas3 = document.querySelector('#canvas3');
+var canvas4 = document.querySelector('#canvas4');
 
 var ctx1 = canvas1.getContext('2d');
 var ctx2 = canvas2.getContext('2d');
 var ctx3 = canvas3.getContext('2d');
+var ctx4 = canvas4.getContext("2d");
+
+//constant points in the window
+const heightPixel = 50; // 1 pixel equivalent to 50 intensity
+const fixedFirstFrequencyPointWave1 = 1370;
+const fixedSecondFrequencyPointWave1 = 1700;
+const shiftForZigZagLine = 10;
+const heightToSubstract = 200;
+const startingWidthCoordinateWave1 = 1000;
+const heightCoordinate = canvas1.height;
+const firstWaveScale = 2;
+const secondWaveScale = 1.4;
+const thirdWaveScale = 2.1; //need to change this value
+
+//objects to store the individual frequency and intensity values and the key of those
+var frequencyValues = {},
+    intensityValues = {},
+    frequencyPoint  = {};
+   
+const x1 = 145,
+      y1 = 200,
+      r = 143,
+      headlen = 10 ;
+var theta, //angle set according to intensity range from 0 - 10 i.e min 0 = 226 and max 10 = 316
+    cosA,
+    sinA;
 
 // This is the source of frequency and intensity from the Source Table
 var dataA = document.querySelectorAll('.frequency');
 var intensityA = document.querySelectorAll('.intensity');
-var button = document.querySelector('#submit');
-button.addEventListener('click', getFrequencyIntensityValue);
+// var button = document.querySelector('#submit');
+// button.addEventListener('click', getFrequencyIntensityValue);
 
 
 //This is the source of the first Oscillator value
@@ -26,84 +53,28 @@ oscillatorSubmit2.addEventListener('click', drawOscillator2Frequency);
 var resetButton = document.querySelector('#resetButton');
 resetButton.addEventListener('click', reset);
 
-function reset(){
-    ctx1.clearRect(0, 0 , canvas1.width, canvas1.height);
-    ctx2.clearRect(0, 0 , canvas2.width, canvas2.height);
-    ctx3.clearRect(0, 0 , canvas3.width, canvas3.height);
+var unitButtons = document.querySelectorAll(".mode");
+var toggleUnit = document.querySelector("#MHz");
 
-    init();
-}
-
-
-var frequencyValues = {};
-function getFrequency(){
-
-    var frequencyValue = this.value;
-    if(this.value != "" || this.value.length > 0){
-        this.disabled = true;
-  }
-  frequencyValues.frequency = frequencyValue;
-  
-} 
-  
-var intensityValues = {};
-function getIntensity(){
-
-    var intensityValue = this.value;
-    if(this.value != "" || this.value.length > 0){
-        this.disabled = true;
-  }
-  intensityValues.intensity = intensityValue;
-
-  getFrequencyIntensityValue();
-//   pointDrawStart();
-  
-} 
-
-  dataA.forEach(function(e){
-  e.addEventListener('change', getFrequency);
-  })
-
-  intensityA.forEach(function(e){
-      e.addEventListener('change',getIntensity);
-  })
-
-
-//constant points in the window
-const heightPixel = 50; // 1 pixel equivalent to 50 intensity
-const fixedFirstFrequencyPointWave1 = 1370;
-const fixedSecondFrequencyPointWave1 = 1700;
-const shiftForZigZagLine = 10;
-const heightToSubstract = 200;
-const startingWidthCoordinateWave1 = 1000;
-const heightCoordinate = canvas1.height;
-const firstWaveScale = 2;
-const secondWaveScale = 1.4;
-const thirdWaveScale = 2.1; //need to change this value
+var unitButtons1 = document.querySelectorAll(".mode1");
+var toggleUnit1 = document.querySelector("#MHz1");
 
 window.onload = init();
 function init(){
     drawAxes();
     drawWave(firstWaveScale);
-    // setupUnitButtons();
-    // getFrequencyIntensityValue();
-    // dataA.focus();
+    drawGauge();
+    setupUnitButtons();
+    setupUnitButtons1();
  }
-//  var unitButtons = document.querySelectorAll(".mode");
-//  console.log(unitButtons.length);
 
-//  function setupUnitButtons(){
-// 	for(var i = 0; i < unitButtons.length; i++){
-// 		unitButtons[i].addEventListener("click", function(){
-// 			unitButtons[0].classList.remove("selected");
-// 			unitButtons[1].classList.remove("selected");
-// 			this.classList.add("selected");
-// 		//	this.textContent === "MHz" ? numSquares = 3: numSquares = 6;
-// 		//	reset();
-// 		});
-// 	}
-// }
-
+function reset(){
+    // ctx3.clearRect(250, 300 ,250 , 200);
+    ctx1.clearRect(0, 0 , canvas1.width, canvas1.height);
+    ctx2.clearRect(0, 0 , canvas2.width, canvas2.height);
+    ctx3.clearRect(0, 0 , canvas3.width, canvas3.height);
+    init();
+}
 
 //var widthPixel = 2;
 // function to draw the axes in the canvas
@@ -111,16 +82,34 @@ function drawAxes(){
     ctx1.beginPath();
     ctx1.lineTo(0, 300);
     ctx1.lineTo(500,300);
-    ctx1.stroke();
-
-    ctx2.moveTo(0,300);
-    ctx2.lineTo(500, 300);
-    ctx2.stroke();
-
-    ctx3.moveTo(0,300);
-    ctx3.lineTo(500, 300);
-    ctx3.stroke();    
+    ctx1.stroke();   
 }
+
+function drawGauge() {
+    ctx4.beginPath();
+    ctx4.arc(150, 200, 150, 1.25 * Math.PI, 1.75 * Math.PI);
+
+    //draw point indicator
+    drawPointIndicator(44, 95, headlen, 226)
+    drawPointIndicator(147.5, 50, headlen, 271)
+    drawPointIndicator(255.5, 95, headlen, 316)
+    ctx4.stroke();
+    //line draw with arrow
+    ctx4.moveTo(x1, y1);
+
+    //add point value at the co-ordinate defined
+    ctx4.font = '15px serif';
+    ctx4.strokeText(0, 38, 109);
+    ctx4.strokeText(5, 138, 45);
+    ctx4.strokeText(10, 252, 109);
+
+    function drawPointIndicator(x1, y1, r, angle) { // draw point indicator at 0 - 5 - 10
+        ctx4.moveTo(x1, y1);
+        ctx4.lineTo(x1 + r * Math.cos(Math.PI * angle / 180.0), y1 + r * Math.sin(Math.PI * angle / 180.0))
+    }
+
+}
+
 //function to draw the first wave in the right most canvas
  function drawWave(scale){
     
@@ -187,6 +176,61 @@ function drawAxes(){
    
 }
 
+dataA.forEach(function(e){
+    e.addEventListener('change', getFrequency);
+    })
+  
+intensityA.forEach(function(e){
+    e.addEventListener('change',getIntensity);
+    })
+
+function getFrequency(){
+
+    var frequencyValue = this.value;
+    if(this.value != "" || this.value.length > 0){
+        this.disabled = true;
+  }
+  frequencyValues.frequency = frequencyValue;
+  frequencyPoint.point = this.getAttribute('key');
+  
+} 
+  
+function getIntensity(){
+
+    var intensityValue = this.value;
+    if(this.value != "" || this.value.length > 0){
+        this.disabled = true;
+  }
+  intensityValues.intensity = intensityValue;
+  frequencyPoint.point = this.getAttribute('key');
+  getFrequencyIntensityValue();
+
+  
+}
+
+ function setupUnitButtons(){
+	for(var i = 0; i < unitButtons.length; i++){
+		unitButtons[i].addEventListener("click", function(){
+			unitButtons[0].classList.remove("selected");
+			unitButtons[1].classList.remove("selected");
+			this.classList.add("selected");
+			this.textContent === "MHz" ? toggleUnit.textContent = "MHz": toggleUnit.textContent = "KHz";
+		//	reset();
+		});
+	}
+}
+
+function setupUnitButtons1(){
+	for(var i = 0; i < unitButtons1.length; i++){
+		unitButtons1[i].addEventListener("click", function(){
+			unitButtons1[0].classList.remove("selected");
+			unitButtons1[1].classList.remove("selected");
+			this.classList.add("selected");
+			this.textContent === "MHz" ? toggleUnit1.textContent = "MHz": toggleUnit1.textContent = "KHz";
+		//	reset();
+		});
+	}
+}
 
 function getFrequencyIntensityValue(){
 
@@ -196,13 +240,23 @@ function getFrequencyIntensityValue(){
     var signalPoint = (frequencyValue - startingWidthCoordinateWave1) / 2 ;
     var intensityAmplitude = intensityValue * heightPixel;
    
-
-    ctx3.moveTo(signalPoint, heightCoordinate);
-    ctx3.lineTo(signalPoint, intensityAmplitude);
-    ctx3.stroke();
+    drawSignalLine(ctx3, signalPoint, intensityAmplitude, "red");
+    // ctx3.moveTo(signalPoint, heightCoordinate);
+    // ctx3.lineTo(signalPoint, intensityAmplitude);
+    // ctx3.strokeStyle = "#ff0000";
+    // ctx3.stroke();
 
     ctx3.font = '15px serif';
     ctx3.strokeText(frequencyValue, signalPoint, intensityAmplitude);
+}
+
+function drawSignalLine(ctx, signalPoint, intensityAmplitude, color){
+    ctx.beginPath();
+    ctx.moveTo(signalPoint, heightCoordinate);
+    ctx.lineTo(signalPoint, intensityAmplitude);
+    ctx.strokeStyle = "#FF0000";
+    ctx.stroke();
+    ctx.closePath();
 }
 
 function drawOscillatorFrequency(){ 
@@ -217,11 +271,18 @@ function drawOscillatorFrequency(){
     var oscillatorPoint =  (Oscillator1frequencyValue - startingWidthCoordinateWave1) / 2;
     console.log(oscillatorPoint);
     
-   
-    ctx3.moveTo(oscillatorPoint , heightCoordinate);
-    ctx3.lineTo(oscillatorPoint, 100);
-    ctx3.stroke();
+    drawOscillatorLine(ctx3, oscillatorPoint);
+    // ctx3.moveTo(oscillatorPoint , heightCoordinate);
+    // ctx3.lineTo(oscillatorPoint, 100);
+    // ctx3.stroke();
 
+}
+
+function drawOscillatorLine(ctx, oscillatorPoint){
+    ctx.beginPath();
+    ctx.moveTo(oscillatorPoint , heightCoordinate);
+    ctx.lineTo(oscillatorPoint, heightCoordinate - heightToSubstract);
+    ctx.stroke();
 }
 
 function drawOscillator2Frequency(){
@@ -233,10 +294,10 @@ function drawOscillator2Frequency(){
     var Oscillator2frequencyValue = oscillator2.value;
     var oscillatorPoint =  (Oscillator2frequencyValue - 0) / secondWaveScale;
     
-   
-    ctx2.moveTo(oscillatorPoint , heightCoordinate);
-    ctx2.lineTo(oscillatorPoint, heightCoordinate - heightToSubstract);
-    ctx2.stroke();
+   drawOscillatorLine(oscillatorPoint);
+    // ctx2.moveTo(oscillatorPoint , heightCoordinate);
+    // ctx2.lineTo(oscillatorPoint, heightCoordinate - heightToSubstract);
+    // ctx2.stroke();
 }
 
 var shiftedPoint; //This global variable is used to pass the 
@@ -253,6 +314,7 @@ function shiftSourceFrequency(){
        var shiftedIntensityValue = intensityValues['intensity'] * heightPixel;
        ctx2.lineTo(exactShiftedPointToScale, shiftedIntensityValue);
        ctx2.stroke();
+       ctx2.strokeStyle = "#f00";
   
        //logic to print the text
        ctx2.font = '15px serif';
@@ -294,6 +356,7 @@ function shiftSourceFrequencyAccordingToOscillator2(){
      var shiftedIntensityValue = intensityValues['intensity'] * heightPixel;
      ctx1.lineTo(exactShiftedPointToScale, shiftedIntensityValue);
      ctx1.stroke();
+     ctx1.strokeStyle = "#f00";
 
      //logic to print the text
      ctx1.font = '15px serif';
@@ -327,61 +390,26 @@ function decreaseFrequencyByStep(){
     oscillator1.value =  Number(oscillator1.value) - Number(stepValue.value) ;
 }
 
+    function pointDrawStart() {
 
-
-
-
-    var canvas4 = document.querySelector('#canvas4'),
-    ctx4 = canvas4.getContext("2d"),
-    x1 = 145,
-    y1 = 200,
-    r = 143,
-    headlen = 10,
-    theta, //angle set according to intensity range from 0 - 10 i.e min 0 = 226 and max 10 = 316
-    cosA,
-    sinA,
-    pointName = 'A,B,C,D';
-
-function pointDrawStart() {
-    ctx4.clearRect(0, 0, canvas4.width, canvas4.height);
-    ctx4.beginPath();
-    ctx4.arc(150, 200, 150, 1.25 * Math.PI, 1.75 * Math.PI);
-
-    //draw point indicator
-    drawPointIndicator(44, 95, headlen, 226)
-    drawPointIndicator(147.5, 50, headlen, 271)
-    drawPointIndicator(255.5, 95, headlen, 316)
-    ctx4.stroke();
-    //line draw with arrow
-    ctx4.moveTo(x1, y1);
-
-    var drawLineAtpoint = function (point) {
-        var angleA = 226,
-            singlePointAngleIncrease = (316 - 226) / 10;
-        return angleA + point * singlePointAngleIncrease;
-    }
-
-    // for (i = 0; i <= 3; i++) {
-    //     var point = pointName.split(','),
-    //          pointValue = document.querySelector('#intensity' + point[i]).value;
-         pointValue = intensityValues['intensity'];
-            
+        var drawLineAtpoint = function (point) {
+            var angleA = 226,
+                singlePointAngleIncrease = (316 - 226) / 10;
+            return angleA + point * singlePointAngleIncrease;
+        }
+    
+        pointValue = intensityValues['intensity'];
+    
         if (pointValue != "") {
             theta = drawLineAtpoint(pointValue);
             cosA = Math.cos(Math.PI * theta / 180.0);
             sinA = Math.sin(Math.PI * theta / 180.0);
-
+    
             //draw line with arrow
-            lineArrow(x1, y1, x1 + r * cosA, y1 + r * sinA, headlen, "B");
+            lineArrow(x1, y1, x1 + r * cosA, y1 + r * sinA, headlen, frequencyPoint["point"]);
             ctx4.stroke();
         }
-    // }
-
-    //add point value at the co-ordinate defined
-    ctx4.font = '15px serif';
-    ctx4.strokeText(0, 38, 109);
-    ctx4.strokeText(5, 138, 45);
-    ctx4.strokeText(10, 252, 109);
+     
 
     function lineArrow(fromx, fromy, tox, toy, headlen, pointName) { // draw line along with pointer
         var dx = tox - fromx,
@@ -397,8 +425,4 @@ function pointDrawStart() {
         ctx4.strokeText(pointName, tox - headlen * Math.cos(angle - Math.PI / 6), toy + 8 - headlen * Math.sin(angle - Math.PI / 6));
     }
 
-    function drawPointIndicator(x1, y1, r, angle) { // draw point indicator at 0 - 5 - 10
-        ctx4.moveTo(x1, y1);
-        ctx4.lineTo(x1 + r * Math.cos(Math.PI * angle / 180.0), y1 + r * Math.sin(Math.PI * angle / 180.0))
-    }
 }

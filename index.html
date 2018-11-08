@@ -37,23 +37,23 @@
                                     </tr>
                                     <tr>
                                         <td>A</td>
-                                        <td>FREQ <input type="text" id="frequencyA" class="frequency" ></td>
-                                        <td>INTENSITY <input type="text" id="intensityA" class = 'intensity' ></td>
+                                        <td>FREQ <input type="text" id="frequencyA" class="frequency" key='A'></td>
+                                        <td>INTENSITY <input type="text" id="intensityA" class = 'intensity' key='A'></td>
                                     </tr>
                                     <tr>
                                         <td>B</td>
-                                        <td >FREQ <input type="text" id="frequencyB" class="frequency"></td>
-                                        <td>INTENSITY <input type="text" id="intensityB" class="intensity"></td>
+                                        <td >FREQ <input type="text" id="frequencyB" class="frequency" key='B'></td>
+                                        <td>INTENSITY <input type="text" id="intensityB" class="intensity" key='B'></td>
                                      </tr>
                                      <tr>
                                          <td>C</td>
-                                         <td>FREQ <input type="text" id="frequencyC" class="frequency"></td>
-                                         <td>INTENSITY <input type="text" id="intensityC" class="intensity"></td>
+                                         <td>FREQ <input type="text" id="frequencyC" class="frequency" key='C'></td>
+                                         <td>INTENSITY <input type="text" id="intensityC" class="intensity" key='C'></td>
                                      </tr>
                                      <tr>
                                          <td>D</td>
-                                         <td>FREQ <input type="text" id="frequencyD" class="frequency"></td>
-                                         <td>INTENSITY <input type="text" id="intensityD" class="intensity"></td>
+                                         <td>FREQ <input type="text" id="frequencyD" class="frequency" key='D'></td>
+                                         <td>INTENSITY <input type="text" id="intensityD" class="intensity" key='D'></td>
                                      </tr>
                                 </table>
                                 <button id="submit">Submit</button>
@@ -79,34 +79,6 @@
 
 <div id = "inputData">
    <div id="dataSection" class="row">
-    <!-- <div class="col-md-4">
-        <table id= "firstTable">
-            <tr>
-                 <th colspan="3" style="text-align: center">SOURCES</th>
-            </tr>
-            <tr>
-                <td>A</td>
-                <td>FREQ <input type="text" id="frequencyA" class="frequency" ></td>
-                <td>INTENSITY <input type="text" id="intensityA" class = 'intensity' ></td>
-            </tr>
-            <tr>
-                <td>B</td>
-                <td >FREQ <input type="text" id="frequencyB" class="frequency"></td>
-                <td>INTENSITY <input type="text" id="intensityB" class="intensity"></td>
-             </tr>
-             <tr>
-                 <td>C</td>
-                 <td>FREQ <input type="text" id="frequencyC" class="frequency"></td>
-                 <td>INTENSITY <input type="text" id="intensityC" class="intensity"></td>
-             </tr>
-             <tr>
-                 <td>D</td>
-                 <td>FREQ <input type="text" id="frequencyD" class="frequency"></td>
-                 <td>INTENSITY <input type="text" id="intensityD" class="intensity"></td>
-             </tr>
-        </table>
-        <button id="submit">Submit</button>
-    </div> -->
     
    
     <div class="col-md-3 offset-md-4 ">
@@ -119,7 +91,7 @@
 
                         <tr>
                             <td>
-                                <input type="text" id="oscillator2"> MHz
+                                <input type="text" id="oscillator2"> <span id = "MHz">MHz</span>
                             </td>
 
                             <!-- <td>
@@ -137,17 +109,17 @@
                         </tr>
 
                         <tr style="text-align: center">
-                            <td colspan="4">
+                            <!-- <td colspan="4">
                                 KHz MHz STEP 
                                 &nbsp;
                                 <input type="text" >
-                            </td>
-                            <!-- <td>
+                            </td> -->
+                            <td>
                                 <button class="mode">KHz</button>
                                 <button class="mode selected">MHz</button>
                                 <span>STEP</span>
                                 <input type="text" >
-                            </td> -->
+                            </td>
                         </tr>
 
                         <tr>
@@ -167,11 +139,8 @@
                 </tr>
                 <tr>
                     <td>
-                        <input type="text" id="oscillator1"> MHz
+                        <input type="text" id="oscillator1"> <span id="MHz1">MHz</span>
                     </td>
-                    <!-- <td>
-                        MHz
-                    </td> -->
 
                     <td>
                             <span id="arrowUpButton" class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
@@ -183,10 +152,13 @@
                    
                 </tr>
                 <tr style="text-align: center">
-                    <td colspan="4">
-                        KHz MHz STEP 
-                        &nbsp;
-                        <!-- <input type="text" id="stepValue"> -->
+                
+                        <td>
+                            <button class="mode1">KHz</button>
+                            <button class="mode1 selected">MHz</button>
+                            <span>STEP</span>
+            
+
                         <select id="stepValue">
                             <option>5</option>
                             <option>10</option>
