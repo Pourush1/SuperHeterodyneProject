@@ -23,15 +23,24 @@ const thirdWaveScale = 2.1; //need to change this value
 //objects to store the individual frequency and intensity values and the key of those
 var frequencyValues = {},
     intensityValues = {},
-    frequencyPoint  = {};
-   
+    frequencyPoint = {};
+
 const x1 = 145,
-      y1 = 200,
-      r = 143,
-      headlen = 10 ;
+    y1 = 200,
+    r = 143,
+    headlen = 10;
 var theta, //angle set according to intensity range from 0 - 10 i.e min 0 = 226 and max 10 = 316
     cosA,
-    sinA;
+    sinA,
+    colorLine = [{
+        'A': 'red'
+    }, {
+        'B': 'blue'
+    }, {
+        'C': 'green'
+    }, {
+        'D': 'black'
+    }];
 
 // This is the source of frequency and intensity from the Source Table
 var dataA = document.querySelectorAll('.frequency');
@@ -60,33 +69,35 @@ var unitButtons1 = document.querySelectorAll(".mode1");
 var toggleUnit1 = document.querySelector("#MHz1");
 
 window.onload = init();
-function init(){
+
+function init() {
     drawAxes();
     drawWave(firstWaveScale);
     drawGauge();
     setupUnitButtons();
     setupUnitButtons1();
- }
+}
 
-function reset(){
+function reset() {
     // ctx3.clearRect(250, 300 ,250 , 200);
-    ctx1.clearRect(0, 0 , canvas1.width, canvas1.height);
-    ctx2.clearRect(0, 0 , canvas2.width, canvas2.height);
-    ctx3.clearRect(0, 0 , canvas3.width, canvas3.height);
+    ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
+    ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
+    ctx3.clearRect(0, 0, canvas3.width, canvas3.height);
     init();
 }
 
 //var widthPixel = 2;
 // function to draw the axes in the canvas
-function drawAxes(){
+function drawAxes() {
     ctx1.beginPath();
     ctx1.lineTo(0, 300);
-    ctx1.lineTo(500,300);
-    ctx1.stroke();   
+    ctx1.lineTo(500, 300);
+    ctx1.stroke();
 }
 
 function drawGauge() {
     ctx4.beginPath();
+    ctx4.strokeStyle = 'black';
     ctx4.arc(150, 200, 150, 1.25 * Math.PI, 1.75 * Math.PI);
 
     //draw point indicator
@@ -111,27 +122,25 @@ function drawGauge() {
 }
 
 //function to draw the first wave in the right most canvas
- function drawWave(scale){
-    
-    if(scale === 2){
+function drawWave(scale) {
 
-        var firstPoint =  (fixedFirstFrequencyPointWave1 - startingWidthCoordinateWave1) / scale;
-        var secondPoint =  (fixedSecondFrequencyPointWave1 - startingWidthCoordinateWave1) / scale;
+    if (scale === 2) {
+
+        var firstPoint = (fixedFirstFrequencyPointWave1 - startingWidthCoordinateWave1) / scale;
+        var secondPoint = (fixedSecondFrequencyPointWave1 - startingWidthCoordinateWave1) / scale;
 
         ctx3.beginPath();
 
         ctx3.moveTo(firstPoint, heightCoordinate);
-        ctx3.lineTo(firstPoint + shiftForZigZagLine , heightCoordinate - heightToSubstract);
-        ctx3.lineTo(secondPoint - shiftForZigZagLine , heightCoordinate - heightToSubstract);
+        ctx3.lineTo(firstPoint + shiftForZigZagLine, heightCoordinate - heightToSubstract);
+        ctx3.lineTo(secondPoint - shiftForZigZagLine, heightCoordinate - heightToSubstract);
         ctx3.lineTo(secondPoint, heightCoordinate);
         ctx3.stroke();
 
         ctx3.font = '15px serif';
-        ctx3.strokeText(fixedFirstFrequencyPointWave1, firstPoint - shiftForZigZagLine , heightCoordinate - heightToSubstract );
-        ctx3.strokeText(fixedSecondFrequencyPointWave1, secondPoint - shiftForZigZagLine,  heightCoordinate - heightToSubstract );
-    }
-
-    else if (scale === 1.4) {
+        ctx3.strokeText(fixedFirstFrequencyPointWave1, firstPoint - shiftForZigZagLine, heightCoordinate - heightToSubstract);
+        ctx3.strokeText(fixedSecondFrequencyPointWave1, secondPoint - shiftForZigZagLine, heightCoordinate - heightToSubstract);
+    } else if (scale === 1.4) {
         var point = Math.abs(fixedFirstFrequencyPointWave1 - oscillator1.value);
         var secondPoint = Math.abs(fixedSecondFrequencyPointWave1 - oscillator1.value);
 
@@ -141,105 +150,103 @@ function drawGauge() {
         ctx2.beginPath();
 
         ctx2.moveTo(pointA, heightCoordinate);
-        ctx2.lineTo(pointA + shiftForZigZagLine , heightCoordinate -heightToSubstract);
-        ctx2.lineTo(pointB - shiftForZigZagLine , heightCoordinate - heightToSubstract);
+        ctx2.lineTo(pointA + shiftForZigZagLine, heightCoordinate - heightToSubstract);
+        ctx2.lineTo(pointB - shiftForZigZagLine, heightCoordinate - heightToSubstract);
         ctx2.lineTo(pointB, heightCoordinate);
 
         ctx2.stroke();
 
         ctx2.font = '15px serif';
-        ctx2.strokeText(point, pointA + shiftForZigZagLine , heightCoordinate - heightToSubstract );
-        ctx2.strokeText(secondPoint, pointB - shiftForZigZagLine , heightCoordinate - heightToSubstract );
-    }
-
-    else if (scale === 2.1){
-         // fixed values 110 and 0 for the low pass flter
-        var point = Math.abs((110 * 10 - oscillator2.value * 10) / 10 );
+        ctx2.strokeText(point, pointA + shiftForZigZagLine, heightCoordinate - heightToSubstract);
+        ctx2.strokeText(secondPoint, pointB - shiftForZigZagLine, heightCoordinate - heightToSubstract);
+    } else if (scale === 2.1) {
+        // fixed values 110 and 0 for the low pass flter
+        var point = Math.abs((110 * 10 - oscillator2.value * 10) / 10);
         var secondPoint = Math.abs(0 - oscillator2.value);
-      
+
         var pointA = (point - 0) * scale;
-        var pointB = (secondPoint - 0) *  scale;
+        var pointB = (secondPoint - 0) * scale;
 
         ctx1.beginPath();
 
         ctx1.moveTo(pointA, heightCoordinate);
-        ctx1.lineTo(pointA + shiftForZigZagLine , heightCoordinate - heightToSubstract);
-        ctx1.lineTo(pointB - shiftForZigZagLine , heightCoordinate - heightToSubstract);
+        ctx1.lineTo(pointA + shiftForZigZagLine, heightCoordinate - heightToSubstract);
+        ctx1.lineTo(pointB - shiftForZigZagLine, heightCoordinate - heightToSubstract);
         ctx1.lineTo(pointB, heightCoordinate);
 
         ctx1.stroke();
 
         ctx1.font = '15px serif';
-        ctx1.strokeText(point, pointA + shiftForZigZagLine , heightCoordinate - heightToSubstract );
-        ctx1.strokeText(secondPoint, pointB - shiftForZigZagLine , heightCoordinate - heightToSubstract );
+        ctx1.strokeText(point, pointA + shiftForZigZagLine, heightCoordinate - heightToSubstract);
+        ctx1.strokeText(secondPoint, pointB - shiftForZigZagLine, heightCoordinate - heightToSubstract);
     }
-   
+
 }
 
-dataA.forEach(function(e){
+dataA.forEach(function (e) {
     e.addEventListener('change', getFrequency);
-    })
-  
-intensityA.forEach(function(e){
-    e.addEventListener('change',getIntensity);
-    })
+})
 
-function getFrequency(){
+intensityA.forEach(function (e) {
+    e.addEventListener('change', getIntensity);
+})
+
+function getFrequency() {
 
     var frequencyValue = this.value;
-    if(this.value != "" || this.value.length > 0){
+    if (this.value != "" || this.value.length > 0) {
         this.disabled = true;
-  }
-  frequencyValues.frequency = frequencyValue;
-  frequencyPoint.point = this.getAttribute('key');
-  
-} 
-  
-function getIntensity(){
+    }
+    frequencyValues.frequency = frequencyValue;
+    frequencyPoint.point = this.getAttribute('key');
+
+}
+
+function getIntensity() {
 
     var intensityValue = this.value;
-    if(this.value != "" || this.value.length > 0){
+    if (this.value != "" || this.value.length > 0) {
         this.disabled = true;
-  }
-  intensityValues.intensity = intensityValue;
-  frequencyPoint.point = this.getAttribute('key');
-  getFrequencyIntensityValue();
+    }
+    intensityValues.intensity = intensityValue;
+    frequencyPoint.point = this.getAttribute('key');
+    getFrequencyIntensityValue();
 
-  
+
 }
 
- function setupUnitButtons(){
-	for(var i = 0; i < unitButtons.length; i++){
-		unitButtons[i].addEventListener("click", function(){
-			unitButtons[0].classList.remove("selected");
-			unitButtons[1].classList.remove("selected");
-			this.classList.add("selected");
-			this.textContent === "MHz" ? toggleUnit.textContent = "MHz": toggleUnit.textContent = "KHz";
-		//	reset();
-		});
-	}
+function setupUnitButtons() {
+    for (var i = 0; i < unitButtons.length; i++) {
+        unitButtons[i].addEventListener("click", function () {
+            unitButtons[0].classList.remove("selected");
+            unitButtons[1].classList.remove("selected");
+            this.classList.add("selected");
+            this.textContent === "MHz" ? toggleUnit.textContent = "MHz" : toggleUnit.textContent = "KHz";
+            //	reset();
+        });
+    }
 }
 
-function setupUnitButtons1(){
-	for(var i = 0; i < unitButtons1.length; i++){
-		unitButtons1[i].addEventListener("click", function(){
-			unitButtons1[0].classList.remove("selected");
-			unitButtons1[1].classList.remove("selected");
-			this.classList.add("selected");
-			this.textContent === "MHz" ? toggleUnit1.textContent = "MHz": toggleUnit1.textContent = "KHz";
-		//	reset();
-		});
-	}
+function setupUnitButtons1() {
+    for (var i = 0; i < unitButtons1.length; i++) {
+        unitButtons1[i].addEventListener("click", function () {
+            unitButtons1[0].classList.remove("selected");
+            unitButtons1[1].classList.remove("selected");
+            this.classList.add("selected");
+            this.textContent === "MHz" ? toggleUnit1.textContent = "MHz" : toggleUnit1.textContent = "KHz";
+            //	reset();
+        });
+    }
 }
 
-function getFrequencyIntensityValue(){
+function getFrequencyIntensityValue() {
 
-   var frequencyValue =  frequencyValues['frequency'];
-   var intensityValue =  intensityValues['intensity'];
+    var frequencyValue = frequencyValues['frequency'];
+    var intensityValue = intensityValues['intensity'];
 
-    var signalPoint = (frequencyValue - startingWidthCoordinateWave1) / 2 ;
+    var signalPoint = (frequencyValue - startingWidthCoordinateWave1) / 2;
     var intensityAmplitude = intensityValue * heightPixel;
-   
+
     drawSignalLine(ctx3, signalPoint, intensityAmplitude, "red");
     // ctx3.moveTo(signalPoint, heightCoordinate);
     // ctx3.lineTo(signalPoint, intensityAmplitude);
@@ -250,7 +257,7 @@ function getFrequencyIntensityValue(){
     ctx3.strokeText(frequencyValue, signalPoint, intensityAmplitude);
 }
 
-function drawSignalLine(ctx, signalPoint, intensityAmplitude, color){
+function drawSignalLine(ctx, signalPoint, intensityAmplitude, color) {
     ctx.beginPath();
     ctx.moveTo(signalPoint, heightCoordinate);
     ctx.lineTo(signalPoint, intensityAmplitude);
@@ -259,7 +266,7 @@ function drawSignalLine(ctx, signalPoint, intensityAmplitude, color){
     ctx.closePath();
 }
 
-function drawOscillatorFrequency(){ 
+function drawOscillatorFrequency() {
     reset();
     getFrequencyIntensityValue();
     drawWave(secondWaveScale);
@@ -268,9 +275,9 @@ function drawOscillatorFrequency(){
 
     var Oscillator1frequencyValue = oscillator1.value;
     console.log(Oscillator1frequencyValue);
-    var oscillatorPoint =  (Oscillator1frequencyValue - startingWidthCoordinateWave1) / 2;
+    var oscillatorPoint = (Oscillator1frequencyValue - startingWidthCoordinateWave1) / 2;
     console.log(oscillatorPoint);
-    
+
     drawOscillatorLine(ctx3, oscillatorPoint);
     // ctx3.moveTo(oscillatorPoint , heightCoordinate);
     // ctx3.lineTo(oscillatorPoint, 100);
@@ -278,23 +285,23 @@ function drawOscillatorFrequency(){
 
 }
 
-function drawOscillatorLine(ctx, oscillatorPoint){
+function drawOscillatorLine(ctx, oscillatorPoint) {
     ctx.beginPath();
-    ctx.moveTo(oscillatorPoint , heightCoordinate);
+    ctx.moveTo(oscillatorPoint, heightCoordinate);
     ctx.lineTo(oscillatorPoint, heightCoordinate - heightToSubstract);
     ctx.stroke();
 }
 
-function drawOscillator2Frequency(){
+function drawOscillator2Frequency() {
     drawOscillatorFrequency();
     drawWave(thirdWaveScale);
     shiftSourceFrequencyAccordingToOscillator2();
     drawFixedFilter2();
 
     var Oscillator2frequencyValue = oscillator2.value;
-    var oscillatorPoint =  (Oscillator2frequencyValue - 0) / secondWaveScale;
-    
-   drawOscillatorLine(oscillatorPoint);
+    var oscillatorPoint = (Oscillator2frequencyValue - 0) / secondWaveScale;
+
+    drawOscillatorLine(oscillatorPoint);
     // ctx2.moveTo(oscillatorPoint , heightCoordinate);
     // ctx2.lineTo(oscillatorPoint, heightCoordinate - heightToSubstract);
     // ctx2.stroke();
@@ -302,74 +309,74 @@ function drawOscillator2Frequency(){
 
 var shiftedPoint; //This global variable is used to pass the 
 
-function shiftSourceFrequency(){
-   
+function shiftSourceFrequency() {
 
-       //logic to shift the source frequency point
-    //    shiftedPoint = Math.abs(dataA.value - oscillator1.value);
-       shiftedPoint = Math.abs(frequencyValues['frequency'] - oscillator1.value);
-       var exactShiftedPointToScale = shiftedPoint / secondWaveScale;
-       ctx2.moveTo(exactShiftedPointToScale, heightCoordinate);
-      // var shiftedIntensityValue = intensityA.value * heightPixel;
-       var shiftedIntensityValue = intensityValues['intensity'] * heightPixel;
-       ctx2.lineTo(exactShiftedPointToScale, shiftedIntensityValue);
-       ctx2.stroke();
-       ctx2.strokeStyle = "#f00";
-  
-       //logic to print the text
-       ctx2.font = '15px serif';
-       ctx2.strokeText(shiftedPoint, exactShiftedPointToScale, shiftedIntensityValue );
 
-    
-    }
-
-     function drawFixedLowPassFilter(){
-     var filterPoint = 110/secondWaveScale ; // fixed low pass filter point 110
-
-     //logic to draw the fix low pass filter, always in the same position
-     ctx2.moveTo(0,heightCoordinate);
-     ctx2.lineTo(shiftForZigZagLine,  heightToSubstract);
-     ctx2.lineTo(filterPoint - shiftForZigZagLine , heightToSubstract);
-     ctx2.lineTo(filterPoint , heightCoordinate);
-     ctx2.stroke();
-
-     // logic to print the text
-     ctx2.font = '10px serif';
-     ctx2.strokeText(0 , 0, heightCoordinate );
-     ctx2.strokeText(110,filterPoint , heightCoordinate);
-     ctx2.strokeText("IF FILTER 1", filterPoint - 60, 250 );
-     }
-
-   
-
-function shiftSourceFrequencyAccordingToOscillator2(){
-    
     //logic to shift the source frequency point
-     var finalShiftedPoint = Math.abs((shiftedPoint * 10 - oscillator2.value * 10) / 10 );
+    //    shiftedPoint = Math.abs(dataA.value - oscillator1.value);
+    shiftedPoint = Math.abs(frequencyValues['frequency'] - oscillator1.value);
+    var exactShiftedPointToScale = shiftedPoint / secondWaveScale;
+    ctx2.moveTo(exactShiftedPointToScale, heightCoordinate);
+    // var shiftedIntensityValue = intensityA.value * heightPixel;
+    var shiftedIntensityValue = intensityValues['intensity'] * heightPixel;
+    ctx2.lineTo(exactShiftedPointToScale, shiftedIntensityValue);
+    ctx2.stroke();
+    ctx2.strokeStyle = "#f00";
 
-     if(finalShiftedPoint > 10.695 && finalShiftedPoint < 10.705){
-         pointDrawStart();
-     }
-     var exactShiftedPointToScale = finalShiftedPoint * thirdWaveScale;
-     ctx1.moveTo(exactShiftedPointToScale, heightCoordinate);
-   //  var shiftedIntensityValue = intensityA.value * heightPixel;
-     var shiftedIntensityValue = intensityValues['intensity'] * heightPixel;
-     ctx1.lineTo(exactShiftedPointToScale, shiftedIntensityValue);
-     ctx1.stroke();
-     ctx1.strokeStyle = "#f00";
+    //logic to print the text
+    ctx2.font = '15px serif';
+    ctx2.strokeText(shiftedPoint, exactShiftedPointToScale, shiftedIntensityValue);
 
-     //logic to print the text
-     ctx1.font = '15px serif';
-     ctx1.strokeText(finalShiftedPoint, exactShiftedPointToScale, shiftedIntensityValue );
+
 }
 
-function drawFixedFilter2(){
+function drawFixedLowPassFilter() {
+    var filterPoint = 110 / secondWaveScale; // fixed low pass filter point 110
+
+    //logic to draw the fix low pass filter, always in the same position
+    ctx2.moveTo(0, heightCoordinate);
+    ctx2.lineTo(shiftForZigZagLine, heightToSubstract);
+    ctx2.lineTo(filterPoint - shiftForZigZagLine, heightToSubstract);
+    ctx2.lineTo(filterPoint, heightCoordinate);
+    ctx2.stroke();
+
+    // logic to print the text
+    ctx2.font = '10px serif';
+    ctx2.strokeText(0, 0, heightCoordinate);
+    ctx2.strokeText(110, filterPoint, heightCoordinate);
+    ctx2.strokeText("IF FILTER 1", filterPoint - 60, 250);
+}
+
+
+
+function shiftSourceFrequencyAccordingToOscillator2() {
+
+    //logic to shift the source frequency point
+    var finalShiftedPoint = Math.abs((shiftedPoint * 10 - oscillator2.value * 10) / 10);
+
+    if (finalShiftedPoint > 10.695 && finalShiftedPoint < 10.705) {
+        pointDrawStart();
+    }
+    var exactShiftedPointToScale = finalShiftedPoint * thirdWaveScale;
+    ctx1.moveTo(exactShiftedPointToScale, heightCoordinate);
+    //  var shiftedIntensityValue = intensityA.value * heightPixel;
+    var shiftedIntensityValue = intensityValues['intensity'] * heightPixel;
+    ctx1.lineTo(exactShiftedPointToScale, shiftedIntensityValue);
+    ctx1.stroke();
+    ctx1.strokeStyle = "#f00";
+
+    //logic to print the text
+    ctx1.font = '15px serif';
+    ctx1.strokeText(finalShiftedPoint, exactShiftedPointToScale, shiftedIntensityValue);
+}
+
+function drawFixedFilter2() {
     //fixd filter points 10.695 and 10.705
-    var filterPoint = 10.695 * 2 ;
-    var filterPoint2 = 10.705 * 2 ;
+    var filterPoint = 10.695 * 2;
+    var filterPoint2 = 10.705 * 2;
 
     ctx1.moveTo(filterPoint, heightCoordinate);
-    ctx1.lineTo(filterPoint , heightToSubstract);
+    ctx1.lineTo(filterPoint, heightToSubstract);
     ctx1.lineTo(filterPoint2 + 5, heightToSubstract);
     ctx1.lineTo(filterPoint2 + 5, heightCoordinate);
     ctx1.stroke();
@@ -380,42 +387,44 @@ var arrowDownButton = document.querySelector("#arrowDownButton");
 var stepValue = document.querySelector("#stepValue");
 
 arrowUPButton.addEventListener('click', increaseFrequencyByStep);
-arrowDownButton.addEventListener('click' , decreaseFrequencyByStep);
+arrowDownButton.addEventListener('click', decreaseFrequencyByStep);
 
-function increaseFrequencyByStep(){
-    oscillator1.value = Number(stepValue.value) + Number(oscillator1.value) ;
+function increaseFrequencyByStep() {
+    oscillator1.value = Number(stepValue.value) + Number(oscillator1.value);
 }
 
-function decreaseFrequencyByStep(){
-    oscillator1.value =  Number(oscillator1.value) - Number(stepValue.value) ;
+function decreaseFrequencyByStep() {
+    oscillator1.value = Number(oscillator1.value) - Number(stepValue.value);
 }
 
-    function pointDrawStart() {
+function pointDrawStart() {
 
-        var drawLineAtpoint = function (point) {
-            var angleA = 226,
-                singlePointAngleIncrease = (316 - 226) / 10;
-            return angleA + point * singlePointAngleIncrease;
-        }
-    
-        pointValue = intensityValues['intensity'];
-    
-        if (pointValue != "") {
-            theta = drawLineAtpoint(pointValue);
-            cosA = Math.cos(Math.PI * theta / 180.0);
-            sinA = Math.sin(Math.PI * theta / 180.0);
-    
-            //draw line with arrow
-            lineArrow(x1, y1, x1 + r * cosA, y1 + r * sinA, headlen, frequencyPoint["point"]);
-            ctx4.stroke();
-        }
-     
+    var drawLineAtpoint = function (point) {
+        var angleA = 226,
+            singlePointAngleIncrease = (316 - 226) / 10;
+        return angleA + point * singlePointAngleIncrease;
+    }
 
-    function lineArrow(fromx, fromy, tox, toy, headlen, pointName) { // draw line along with pointer
+    pointValue = intensityValues['intensity'];
+
+    if (pointValue != "") {
+        theta = drawLineAtpoint(pointValue);
+        cosA = Math.cos(Math.PI * theta / 180.0);
+        sinA = Math.sin(Math.PI * theta / 180.0);
+
+        //draw line with arrow
+        lineArrow(x1, y1, x1 + r * cosA, y1 + r * sinA, headlen, frequencyPoint["point"], getField(colorLine, frequencyPoint["point"]));
+        ctx4.stroke();
+    }
+
+
+    function lineArrow(fromx, fromy, tox, toy, headlen, pointName, color) { // draw line along with pointer
         var dx = tox - fromx,
             dy = toy - fromy,
             angle = Math.atan2(dy, dx);
 
+        ctx4.beginPath();
+        ctx4.strokeStyle = color;
         ctx4.moveTo(fromx, fromy);
         ctx4.lineTo(tox, toy);
         ctx4.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
@@ -425,4 +434,12 @@ function decreaseFrequencyByStep(){
         ctx4.strokeText(pointName, tox - headlen * Math.cos(angle - Math.PI / 6), toy + 8 - headlen * Math.sin(angle - Math.PI / 6));
     }
 
+    function getField(input, field) {
+        var output;
+        for (var i = 0; i < input.length; ++i) {
+            if (input[i][field] != undefined)
+                output = input[i][field];
+        }
+        return output;
+    }
 }
