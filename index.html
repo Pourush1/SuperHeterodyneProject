@@ -16,11 +16,23 @@
 
         .selected {
 	        /* color: white; */
-	        background: green;
+	        background : rgb(162,167,173);
         }
 
         input[type=text] {
             width : 60px;
+        }
+
+        #canvas1{
+            margin: 5px;
+        }
+
+        #canvas2{
+            margin: 5px;
+        }
+
+        #canvas3{
+            margin: 5px;
         }
     </style>
  </head>
@@ -94,31 +106,25 @@
                                 <input type="text" id="oscillator2"> <span id = "MHz">MHz</span>
                             </td>
 
-                            <!-- <td>
-                                    MHz
-                            </td> -->
-
-                            <td>
-                                <span  class="glyphicon glyphicon-arrow-down" ></span>
-                            </td>
-
                             <td>
 
-                                 <span  class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                                <span id="arrowUpButtonOscillator2" class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                           </td>
+
+                            <td>
+                                <span  id="arrowDownButtonOscillator2" class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
                             </td>
                         </tr>
 
-                        <tr style="text-align: center">
-                            <!-- <td colspan="4">
-                                KHz MHz STEP 
-                                &nbsp;
-                                <input type="text" >
-                            </td> -->
+                        <tr style="text-align: center"></tr>
                             <td>
                                 <button class="mode">KHz</button>
                                 <button class="mode selected">MHz</button>
                                 <span>STEP</span>
-                                <input type="text" >
+                                <select id="stepValue2">
+                                    <option>5</option>
+                                    <option>10</option>
+                                </select>
                             </td>
                         </tr>
 
@@ -139,15 +145,15 @@
                 </tr>
                 <tr>
                     <td>
-                        <input type="text" id="oscillator1"> <span id="MHz1">MHz</span>
+                        <input type="text" value= 1000 id="oscillator1"> <span id="MHz1">MHz</span>
                     </td>
 
                     <td>
-                            <span id="arrowUpButton" class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                            <span id="arrowUpButtonOscillator1" class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
                    </td>
 
                     <td>
-                            <span id="arrowDownButton" class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                            <span id="arrowDownButtonOscillator1" class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
                     </td>
                    
                 </tr>
@@ -159,7 +165,7 @@
                             <span>STEP</span>
             
 
-                        <select id="stepValue">
+                        <select id="stepValue1">
                             <option>5</option>
                             <option>10</option>
                         </select>
