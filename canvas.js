@@ -8,6 +8,22 @@ var ctx2 = canvas2.getContext('2d');
 var ctx3 = canvas3.getContext('2d');
 var ctx4 = canvas4.getContext("2d");
 
+var input = new CanvasInput({
+    canvas: document.getElementById('canvas2'),
+    fontSize: 18,
+    fontFamily: 'Arial',
+    fontColor: '#212121',
+    fontWeight: 'bold',
+    width: 300,
+    padding: 8,
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 3,
+    boxShadow: '1px 1px 0px #fff',
+    innerShadow: '0px 0px 5px rgba(0, 0, 0, 0.5)',
+    placeHolder: 'Enter message here...'
+  });
+
 //constant points in the window
 const heightPixel = 50; // 1 pixel equivalent to 50 intensity
 const fixedFirstFrequencyPointWave1 = 1370;
@@ -69,11 +85,13 @@ var toggleUnit1 = document.querySelector("#MHz1");
 window.onload = init();
 
 function init() {
+    var input = new CanvasInput({canvas: document.getElementById('canvas3')});
     drawAxes();
     drawWave(firstWaveScale);
     drawGauge();
     setupUnitButtons();
     setupUnitButtons1();
+    
 }
 
 function reset() {
@@ -118,14 +136,13 @@ function drawGauge() {
 
 //function to draw the first wave in the right most canvas
 function drawWave(scale, oscillatorFrequency) {
-
+    
     if (scale === 2) {
-
         var firstPoint = (fixedFirstFrequencyPointWave1 - startingWidthCoordinateWave1) / scale;
         var secondPoint = (fixedSecondFrequencyPointWave1 - startingWidthCoordinateWave1) / scale;
 
         ctx3.beginPath();
-
+        ctx3.strokeStyle = 'black';
         ctx3.moveTo(firstPoint, heightCoordinate);
         ctx3.lineTo(firstPoint + shiftForZigZagLine, heightCoordinate - heightToSubstract);
         ctx3.lineTo(secondPoint - shiftForZigZagLine, heightCoordinate - heightToSubstract);
@@ -143,7 +160,7 @@ function drawWave(scale, oscillatorFrequency) {
         var pointB = (secondPoint - 0) / scale;
 
         ctx2.beginPath();
-
+        ctx2.strokeStyle = 'black';
         ctx2.moveTo(pointA, heightCoordinate);
         ctx2.lineTo(pointA + shiftForZigZagLine, heightCoordinate - heightToSubstract);
         ctx2.lineTo(pointB - shiftForZigZagLine, heightCoordinate - heightToSubstract);
@@ -162,7 +179,7 @@ function drawWave(scale, oscillatorFrequency) {
         var pointB = (secondPoint - 0) + 100;
 
         ctx1.beginPath();
-
+        ctx1.strokeStyle = 'black';
         ctx1.moveTo(pointA, heightCoordinate);
         ctx1.lineTo(pointA + shiftForZigZagLine, heightCoordinate - heightToSubstract);
         ctx1.lineTo(pointB - shiftForZigZagLine, heightCoordinate - heightToSubstract);
@@ -184,7 +201,7 @@ intensities.forEach(function (e) {
     e.addEventListener('change', getIntensity);
 })
 
-var color;
+
 function getFrequency() {
 
     var frequencyValue = this.value;
@@ -195,9 +212,8 @@ function getFrequency() {
     frequencyPoint.point = this.getAttribute('key');
 
 }
-
 function getIntensity() {
-
+    
     var intensityValue = this.value;
     if (this.value != "" || this.value.length > 0) {
         this.disabled = true;
@@ -205,22 +221,7 @@ function getIntensity() {
     intensityValues.intensity = intensityValue;
     frequencyPoint.point = this.getAttribute('key');
 
-    if (frequencyPoint.point === 'A') {
-        color = 'red';
-    }
-    else if (frequencyPoint.point === 'B') {
-        color = 'green';
-    }
-    else if (frequencyPoint.point === 'C') {
-        color = 'blue';
-    }
-    else if (frequencyPoint.point === 'D') {
-        color = 'yellow';
-    }
-
-    getFrequencyIntensityValue(color);
-
-
+    getFrequencyIntensityValue();
 }
 
 function setupUnitButtons() {
@@ -246,18 +247,16 @@ function setupUnitButtons1() {
 }
 
 
-function getFrequencyIntensityValue(color) {
-
+function getFrequencyIntensityValue() {
     var frequencyValue = frequencyValues['frequency'];
     var intensityValue = intensityValues['intensity'];
 
     var signalPoint = (frequencyValue - startingWidthCoordinateWave1) / 2;
     var intensityAmplitude = intensityValue * heightPixel; 
 
-    drawSignalLine(ctx3, signalPoint, intensityAmplitude, color);
+    drawSignalLine(ctx3, signalPoint, intensityAmplitude);
     writeText(ctx3, frequencyValue, signalPoint, intensityAmplitude);
-    // ctx3.font = '15px serif';
-    // ctx3.strokeText(frequencyValue, signalPoint, intensityAmplitude);
+ 
 }
 
 function writeText(ctx, text, x, y){
@@ -265,11 +264,24 @@ function writeText(ctx, text, x, y){
     ctx.strokeText(text,x,y);
 }
 
-function drawSignalLine(ctx, signalPoint, intensityAmplitude, color) {
+function drawSignalLine(ctx, signalPoint, intensityAmplitude) {
+    var color = "";
+    if (frequencyPoint.point === 'A') {
+        color = 'red';
+    }
+    else if (frequencyPoint.point === 'B') {
+        color = 'green';
+    }
+    else if (frequencyPoint.point === 'C') {
+        color = 'blue';
+    }
+    else if (frequencyPoint.point === 'D') {
+        color = 'yellow';
+    }
     ctx.beginPath();
+    ctx.strokeStyle = color;
     ctx.moveTo(signalPoint, heightCoordinate);
     ctx.lineTo(signalPoint, intensityAmplitude);
-    ctx.strokeStyle = color;
     ctx.stroke();
     ctx.closePath();
 }
@@ -277,7 +289,6 @@ function drawSignalLine(ctx, signalPoint, intensityAmplitude, color) {
 function drawOscillatorFrequency() {
     reset();
     var oscillator1frequencyValue;
-
     if (toggleUnit1.textContent === 'MHz') {
         oscillator1frequencyValue = oscillator1.value;
 
@@ -308,12 +319,14 @@ function drawOscillatorFrequency() {
     getFrequencyIntensityValue();
     drawOscillatorLine(ctx3, oscillatorPoint);
     drawWave(secondWaveScale, oscillator1frequencyValue);
-    shiftSourceFrequency(oscillator1frequencyValue, color);
     drawFixedLowPassFilter();
+    shiftSourceFrequency(oscillator1frequencyValue);
+    
 }
 
 function drawOscillatorLine(ctx, oscillatorPoint) {
     ctx.beginPath();
+    ctx.strokeStyle = 'black';
     ctx.moveTo(oscillatorPoint, heightCoordinate);
     ctx.lineTo(oscillatorPoint, heightCoordinate - heightToSubstract);
     ctx.moveTo(oscillatorPoint - 10, heightCoordinate - heightToSubstract);
@@ -338,20 +351,21 @@ function drawOscillator2Frequency() {
     drawOscillatorFrequency();
     drawOscillatorLine(ctx2, oscillatorPoint);
     drawWave(thirdWaveScale, oscillator2frequencyValue);
-    shiftSourceFrequencyAccordingToOscillator2(oscillator2frequencyValue, color);
     drawFixedFilter2();
+    shiftSourceFrequencyAccordingToOscillator2(oscillator2frequencyValue);
+    
 }
 
 var shiftedPoint; //This global variable is used to pass the 
 
-function shiftSourceFrequency(oscillatorFrequency, color) {
+function shiftSourceFrequency(oscillatorFrequency) {
    
     //logic to shift the source frequency point
     shiftedPoint = Math.abs(frequencyValues['frequency'] - oscillatorFrequency);
     var exactShiftedPointToScale = shiftedPoint / secondWaveScale;
     ctx2.moveTo(exactShiftedPointToScale, heightCoordinate);
     var shiftedIntensityValue = intensityValues['intensity'] * heightPixel;
-    drawSignalLine(ctx2, exactShiftedPointToScale, shiftedIntensityValue, color);
+    drawSignalLine(ctx2, exactShiftedPointToScale, shiftedIntensityValue);
 
     //logic to print the text
     writeText(ctx2,shiftedPoint, exactShiftedPointToScale, shiftedIntensityValue );
@@ -361,6 +375,7 @@ function drawFixedLowPassFilter() {
     var filterPoint = 110 / secondWaveScale; // fixed low pass filter point 110
 
     //logic to draw the fix low pass filter, always in the same position
+    ctx2.strokeStyle = 'black';
     ctx2.moveTo(0, heightCoordinate);
     ctx2.lineTo(shiftForZigZagLine, heightToSubstract);
     ctx2.lineTo(filterPoint - shiftForZigZagLine, heightToSubstract);
@@ -369,24 +384,28 @@ function drawFixedLowPassFilter() {
 
     // logic to print the text
     ctx2.font = '10px serif';
-    ctx2.strokeText(0, 0, heightCoordinate);
+    ctx2.strokeText(0, 0, heightCoordinate )
     ctx2.strokeText(110, filterPoint, heightCoordinate);
     ctx2.strokeText("IF FILTER 1", filterPoint - 60, 250);
 }
 
-function shiftSourceFrequencyAccordingToOscillator2(oscillatorFrequency, color) {
+function shiftSourceFrequencyAccordingToOscillator2(oscillatorFrequency) {
     //logic to shift the source frequency point
     var finalShiftedPoint = Math.abs((shiftedPoint * 10 - oscillatorFrequency * 10) / 10);
 
     if (finalShiftedPoint > (10.695) && finalShiftedPoint < (10.705)) {
         pointDrawStart();
     }
+    else{
+        ctx4.clearRect(0, 0, canvas4.width, canvas4.height);
+        drawGauge();
+    }
     // var exactShiftedPointToScale = finalShiftedPoint * thirdWaveScale;
     var exactShiftedPointToScale = finalShiftedPoint + 100;
     ctx1.moveTo(exactShiftedPointToScale, heightCoordinate);
 
     var shiftedIntensityValue = intensityValues['intensity'] * heightPixel;
-    drawSignalLine(ctx1, exactShiftedPointToScale, shiftedIntensityValue, color);
+    drawSignalLine(ctx1, exactShiftedPointToScale, shiftedIntensityValue);
     //logic to print the text
     writeText(ctx1,finalShiftedPoint, exactShiftedPointToScale, shiftedIntensityValue );
 }
