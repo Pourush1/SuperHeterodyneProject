@@ -1,192 +1,215 @@
 <!DOCTYPE html>
 <html>
- <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
-  <script src="libraries/CanvasInput.min.js"></script>
 
-  <style type="text/css">
-        canvas{
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <script src="libraries/CanvasInput.min.js"></script>
+
+    <style type="text/css">
+        canvas {
             border: 1px solid black;
         }
-        body{
-            margin : 0px;
+
+        body {
+            margin: 0px;
         }
 
         .selected {
-	        /* color: white; */
-	        background : rgb(162,167,173);
+            /* color: white; */
+            background: rgb(162, 167, 173);
         }
 
         input[type=text] {
-            width : 60px;
+            width: 60px;
         }
 
-        #canvas1{
+        #canvas1 {
             margin: 5px;
         }
 
-        #canvas2{
+        #canvas2 {
             margin: 5px;
         }
 
-        #canvas3{
+        #canvas3 {
             margin: 5px;
         }
     </style>
- </head>
- <body>
-    <div class= "container">
-            <div class="row">
-                    <div class="col-md-4">
-                            <canvas id="canvas4" width="500" height="300"></canvas>
-                    </div>
-                    <div class="col-md-4 offset-md-4">
-                            <table id= "firstTable">
-                                    <tr>
-                                         <th colspan="3" style="text-align: center">SOURCES</th>
-                                    </tr>
-                                    <tr>
-                                        <td>A</td>
-                                        <td>FREQ <input type="text" id="frequencyA" class="frequency" key='A'></td>
-                                        <td>INTENSITY <input type="text" id="intensityA" class = 'intensity' key='A'></td>
-                                    </tr>
-                                    <tr>
-                                        <td>B</td>
-                                        <td >FREQ <input type="text" id="frequencyB" class="frequency" key='B'></td>
-                                        <td>INTENSITY <input type="text" id="intensityB" class="intensity" key='B'></td>
-                                     </tr>
-                                     <tr>
-                                         <td>C</td>
-                                         <td>FREQ <input type="text" id="frequencyC" class="frequency" key='C'></td>
-                                         <td>INTENSITY <input type="text" id="intensityC" class="intensity" key='C'></td>
-                                     </tr>
-                                     <tr>
-                                         <td>D</td>
-                                         <td>FREQ <input type="text" id="frequencyD" class="frequency" key='D'></td>
-                                         <td>INTENSITY <input type="text" id="intensityD" class="intensity" key='D'></td>
-                                     </tr>
-                                </table>
-                                <!-- <button id="submit">Submit</button> -->
+</head>
 
-                    </div>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <canvas id="canvas4" width="500" height="300"></canvas>
             </div>
-     </div>       
+            <div class="col-md-4 offset-md-4">
+                <table id="firstTable">
+                    <tr>
+                        <th colspan="3" style="text-align: center">SOURCES</th>
+                    </tr>
+                    <tr>
+                        <td>A</td>
+                        <td>FREQ <input type="text" id="frequencyA" class="frequency" key='A'></td>
+                        <td>INTENSITY <input type="text" id="intensityA" class='intensity' key='A'></td>
+                    </tr>
+                    <tr>
+                        <td>B</td>
+                        <td>FREQ <input type="text" id="frequencyB" class="frequency" key='B'></td>
+                        <td>INTENSITY <input type="text" id="intensityB" class="intensity" key='B'></td>
+                    </tr>
+                    <tr>
+                        <td>C</td>
+                        <td>FREQ <input type="text" id="frequencyC" class="frequency" key='C'></td>
+                        <td>INTENSITY <input type="text" id="intensityC" class="intensity" key='C'></td>
+                    </tr>
+                    <tr>
+                        <td>D</td>
+                        <td>FREQ <input type="text" id="frequencyD" class="frequency" key='D'></td>
+                        <td>INTENSITY <input type="text" id="intensityD" class="intensity" key='D'></td>
+                    </tr>
+                </table>
+                <!-- <button id="submit">Submit</button> -->
 
-  
-   <div class="row">
-        <div class="col-4">   
-            <canvas id="canvas1" width = "500" height= "300"></canvas>
+            </div>
         </div>
-        <div class="col-4"> 
-            <canvas id = "canvas2" width = "500" height = "300"></canvas>
-        </div> 
-        <div class="col-4"> 
-            <canvas id= "canvas3" width = "500" height = "300"></canvas>
-        </div>
-    </div> 
-  
-
-
-<div id = "inputData">
-   <div id="dataSection" class="row">
-    
-   
-    <div class="col-md-3 offset-md-4 ">
-                <table class= "frequencyTable">
-                        <tr>
-                            <td colspan="4">
-                                CENTER FREQUENCY
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <input type="text" id="oscillator2"> <span id = "MHz">MHz</span>
-                            </td>
-
-                            <td>
-
-                                <span id="arrowUpButtonOscillator2" class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
-                           </td>
-
-                            <td>
-                                <span  id="arrowDownButtonOscillator2" class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
-                            </td>
-                        </tr>
-
-                        <tr style="text-align: center"></tr>
-                            <td>
-                                <button class="mode">KHz</button>
-                                <button class="mode selected">MHz</button>
-                                <span>STEP</span>
-                                <select id="stepValue2">
-                                    <option>5</option>
-                                    <option>10</option>
-                                </select>
-                            </td>
-                        </tr>
-
-                        <tr>
-                             <td>
-                                 <button id="oscillatorSubmit2">Submit</button>
-                             </td>
-                        </tr>
-                    </table>
     </div>
 
-    <div class="col-md-3  offset-md-2">
-            <table class= "frequencyTable">
-                <tr>
-                    <td colspan="4">
-                        CENTER FREQUENCY
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <input type="text" value= 1000 id="oscillator1"> <span id="MHz1">MHz</span>
-                    </td>
 
-                    <td>
-                            <span id="arrowUpButtonOscillator1" class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
-                   </td>
+    <div class="row">
+        <div class="col-4">
+            <canvas id="canvas1" width="500" height="300"></canvas>
+        </div>
+        <div class="col-4">
+            <canvas id="canvas2" width="500" height="300"></canvas>
+        </div>
+        <div class="col-4">
+            <canvas id="canvas3" width="500" height="300"></canvas>
+        </div>
+    </div>
 
-                    <td>
-                            <span id="arrowDownButtonOscillator1" class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
-                    </td>
-                   
-                </tr>
-                <tr style="text-align: center">
-                
+
+
+    <div id="inputData">
+        <div id="dataSection" class="row">
+
+
+            <div class="col-md-3 offset-md-4 ">
+                <table class="frequencyTable">
+                    <tr>
+                        <td colspan="4">
+                            CENTER FREQUENCY
+                        </td>
+                    </tr>
+
+                    <tr>
                         <td>
-                            <button class="mode1">KHz</button>
-                            <button class="mode1 selected">MHz</button>
-                            <span>STEP</span>
-            
+                            <input type="text" value=110.7 id="oscillator2"> <span id="MHz">MHz</span>
+                        </td>
 
-                        <select id="stepValue1">
+                        <td>
+
+                            <span id="arrowUpButtonOscillator2" class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                        </td>
+
+                        <td>
+                            <span id="arrowDownButtonOscillator2" class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                        </td>
+                    </tr>
+
+                    <tr style="text-align: center"></tr>
+                    <td>
+                        <button class="mode">KHz</button>
+                        <button class="mode selected">MHz</button>
+                        <span>STEP</span>
+                        <select id="stepValue2">
+                            <!-- <option>0.1</option>
+                            <option>0.2</option>
+                            <option>0.3</option>
+                            <option>0.4</option>
+                            <option>0.5</option>
+                            <option>0.6</option>
+                            <option>0.7</option>
+                            <option>0.8</option>
+                            <option>0.9</option> -->
                             <option>5</option>
                             <option>10</option>
                         </select>
                     </td>
-                </tr>
-                
-                <tr>
-                    <td>
-                        <button id="oscillatorSubmit">Submit</button>
-                    </td>
-                </tr>
-            </table>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <button id="oscillatorSubmit2">Submit</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="col-md-3  offset-md-2">
+                <table class="frequencyTable">
+                    <tr>
+                        <td colspan="4">
+                            CENTER FREQUENCY
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" value=1320 id="oscillator1"> <span id="MHz1">MHz</span>
+                        </td>
+
+                        <td>
+                            <span id="arrowUpButtonOscillator1" class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                        </td>
+
+                        <td>
+                            <span id="arrowDownButtonOscillator1" class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                        </td>
+
+                    </tr>
+                    <tr style="text-align: center">
+
+                        <td>
+                            <button class="mode1">KHz</button>
+                            <button class="mode1 selected">MHz</button>
+                            <span>STEP</span>
+
+
+                            <select id="stepValue1">
+                                <!-- <option>0.1</option>
+                                <option>0.2</option>
+                                <option>0.3</option>
+                                <option>0.4</option>
+                                <option>0.5</option>
+                                <option>0.6</option>
+                                <option>0.7</option>
+                                <option>0.8</option>
+                                <option>0.9</option> -->
+                                <option>5</option>
+                                <option>10</option>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <button id="oscillatorSubmit">Submit</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
     </div>
 
-   </div>
-</div>
+    <button id="resetButton">RESET</button>
 
-<button id= "resetButton">RESET</button>
+    <script src="canvas.js"></script>
 
-<script src= "canvas.js"></script>
-    
 </body>
+
 </html>
