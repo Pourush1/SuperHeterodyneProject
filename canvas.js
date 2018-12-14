@@ -46,6 +46,7 @@ var theta, //angle set according to intensity range from 0 - 10 i.e min 0 = 226 
 
 // This is the source of frequency and intensity from the Source Table
 var datas = document.querySelectorAll('.frequency');
+console.log(datas);
 var intensities = document.querySelectorAll('.intensity');
 
 //This is the source of the first Oscillator value
@@ -67,12 +68,14 @@ var toggleUnit = document.querySelector("#MHz");
 var unitButtons1 = document.querySelectorAll(".mode1");
 var toggleUnit1 = document.querySelector("#MHz1");
 
+
+
 window.onload = init();
 
 var input, input1;
 
 function init() {
-    drawAxes();
+    // drawAxes();
     drawWave(firstWaveScale);
     drawGauge();
     setupUnitButtons();
@@ -129,14 +132,6 @@ function reset() {
      //   }
     }
 }
-
-// function drawLinesAgain(collection) {
-
-//     for (var i = 0; i < collection.length; i++) {
-//         drawNewLine(collection[i]);
-//     }
-
-// }
 
 function drawNewLine(arr, colorValue) {
     var ctx = arr[0];
@@ -205,10 +200,6 @@ function drawGauge() {
 
 }
 
-// input1.onsubmit(function () {
-//     drawWave(firstWaveScale)
-// });
-
 //function to draw the first wave in the right most canvas
 function drawWave(scale, oscillatorFrequency) {
 
@@ -228,22 +219,25 @@ function drawWave(scale, oscillatorFrequency) {
         drawTextBox(canvas3, fixedSecondFrequencyPointWave1, secondPoint, heightCoordinate - heightToSubstract);
 
     } else if (scale === 1.4) {
-        var point = Math.abs(fixedFirstFrequencyPointWave1 - oscillatorFrequency);
-        var secondPoint = Math.abs(fixedSecondFrequencyPointWave1 - oscillatorFrequency);
+        var point = Math.abs((fixedFirstFrequencyPointWave1 * 10 - oscillatorFrequency * 10) / 10);
+        var secondPoint = Math.abs((fixedSecondFrequencyPointWave1 * 10 - oscillatorFrequency * 10) / 10);
 
         var pointA = (point - 0) / scale;
         var pointB = (secondPoint - 0) / scale;
 
         ctx2.beginPath();
+        ctx2.save();
         ctx2.strokeStyle = 'black';
+        ctx2.translate(100,0);
         ctx2.moveTo(pointA, heightCoordinate);
         ctx2.lineTo(pointA + shiftForZigZagLine, heightCoordinate - heightToSubstract);
         ctx2.lineTo(pointB - shiftForZigZagLine, heightCoordinate - heightToSubstract);
         ctx2.lineTo(pointB, heightCoordinate);
         ctx2.stroke();
+        ctx2.restore();
 
-        drawTextBox(canvas2, point, pointA + shiftForZigZagLine, heightCoordinate - heightToSubstract);
-        drawTextBox(canvas2, secondPoint, pointB - shiftForZigZagLine, heightCoordinate - heightToSubstract);
+        drawTextBox(canvas2, point, pointA + shiftForZigZagLine + 100, heightCoordinate - heightToSubstract );
+        drawTextBox(canvas2, secondPoint, pointB - shiftForZigZagLine + 100, heightCoordinate - heightToSubstract);
 
     } else if (scale === 1) {
         // fixed values 110 and 0 for the low pass flter
@@ -254,19 +248,26 @@ function drawWave(scale, oscillatorFrequency) {
         var pointB = (secondPoint - 0) + 100;
 
         ctx1.beginPath();
+        ctx1.save();
+        ctx1.transform(1.5, 0, 0, 1, 0, 0);
         ctx1.strokeStyle = 'black';
         ctx1.moveTo(pointA, heightCoordinate);
         ctx1.lineTo(pointA + shiftForZigZagLine, heightCoordinate - heightToSubstract);
         ctx1.lineTo(pointB - shiftForZigZagLine, heightCoordinate - heightToSubstract);
         ctx1.lineTo(pointB, heightCoordinate);
 
+        
         ctx1.stroke();
+       
+       
+        ctx1.restore();
 
         drawTextBox(canvas1, point, pointA + shiftForZigZagLine, heightCoordinate - heightToSubstract);
-        drawTextBox(canvas1, secondPoint, pointB - shiftForZigZagLine, heightCoordinate - heightToSubstract);
+        drawTextBox(canvas1, secondPoint , pointB - shiftForZigZagLine, heightCoordinate - heightToSubstract);
     }
 
 }
+console.log(Math.sin(Math.PI/6));
 
 datas.forEach(function (e) {
     e.addEventListener('change', getFrequency);
@@ -280,9 +281,9 @@ intensities.forEach(function (e) {
 function getFrequency() {
 
     var frequencyValue = this.value;
-    if (this.value != "" || this.value.length > 0) {
-        this.disabled = true;
-    }
+    // if (this.value != "" || this.value.length > 0) {
+    //     this.disabled = true;
+    // }
     frequencyValues.frequency = frequencyValue;
     frequencyPoint.point = this.getAttribute('key');
 
@@ -290,9 +291,9 @@ function getFrequency() {
 function getIntensity() {
 
     var intensityValue = this.value;
-    if (this.value != "" || this.value.length > 0) {
-        this.disabled = true;
-    }
+    // if (this.value != "" || this.value.length > 0) {
+    //     this.disabled = true;
+    // }
     intensityValues.intensity = intensityValue;
     frequencyPoint.point = this.getAttribute('key');
 
@@ -310,7 +311,7 @@ function setupUnitButtons() {
             unitButtons[0].classList.remove("selected");
             unitButtons[1].classList.remove("selected");
             this.classList.add("selected");
-            this.textContent === "MHz" ? toggleUnit.textContent = "MHz" : toggleUnit.textContent = "KHz";
+   //         this.textContent === "MHz" ? toggleUnit.textContent = "MHz" : toggleUnit.textContent = "KHz";
         });
     }
 }
@@ -321,7 +322,7 @@ function setupUnitButtons1() {
             unitButtons1[0].classList.remove("selected");
             unitButtons1[1].classList.remove("selected");
             this.classList.add("selected");
-            this.textContent === "MHz" ? toggleUnit1.textContent = "MHz" : toggleUnit1.textContent = "KHz";
+   //         this.textContent === "MHz" ? toggleUnit1.textContent = "MHz" : toggleUnit1.textContent = "KHz";
         });
     }
 }
@@ -359,7 +360,7 @@ function drawTextBox(ctx, text, x, y) {
         fontFamily: 'Arial',
         fontColor: '#212121',
         fontWeight: 'bold',
-        width: 28,
+        width: 32,
         padding: 4,
         borderWidth: 1,
         borderColor: '#000',
@@ -487,17 +488,22 @@ function drawFixedLowPassFilter() {
     var filterPoint = 110 / secondWaveScale; // fixed low pass filter point 110
 
     //logic to draw the fix low pass filter, always in the same position
+    ctx2.save();
     ctx2.strokeStyle = 'black';
+    ctx2.translate(100,0);
     ctx2.moveTo(0, heightCoordinate);
     ctx2.lineTo(shiftForZigZagLine, heightToSubstract);
     ctx2.lineTo(filterPoint - shiftForZigZagLine, heightToSubstract);
     ctx2.lineTo(filterPoint, heightCoordinate);
     ctx2.stroke();
+    ctx2.restore();
 
     // logic to print the text
     ctx2.font = '10px serif';
-    ctx2.strokeText(0, 0, heightCoordinate)
-    ctx2.strokeText(110, filterPoint, heightCoordinate);
+    drawTextBox(canvas2,"0", 0 + 85, heightCoordinate + 5);
+    drawTextBox(canvas2,"110", filterPoint + 125, heightCoordinate + 5);
+    // ctx2.strokeText(0, 0, heightCoordinate)
+    // ctx2.strokeText(110, filterPoint, heightCoordinate);
     ctx2.strokeText("IF FILTER 1", filterPoint - 60, 250);
 }
 
@@ -528,11 +534,10 @@ function shiftSourceFrequencyAccordingToOscillator2(oscillatorFrequency) {
 
 function drawFixedFilter2() {
     //fixd filter points 10.695 and 10.705
-    // var filterPoint = 10.695 * 2;
-    // var filterPoint2 = 10.705 * 2;
 
     var filterPoint = 10.695 + 100;
-    var filterPoint2 = 10.705 + 100;
+     var filterPoint2 = 10.705 + 100;
+
 
     ctx1.moveTo(filterPoint, heightCoordinate);
     ctx1.lineTo(filterPoint, heightToSubstract);
@@ -555,8 +560,21 @@ arrowDownButton1.addEventListener('click', decreaseFrequencyOfOscillator1ByStep)
 arrowUpButton2.addEventListener('click', increaseFrequencyOfOscillator2ByStep);
 arrowDownButton2.addEventListener('click', decreaseFrequencyOfOscillator2ByStep);
 
+
+
 function increaseFrequencyOfOscillator1ByStep() {
-    oscillator1.value = (Number(stepValue1.value) * 10 + Number(oscillator1.value) * 10) / 10;
+    for(var i= 0; i <unitButtons1.length; i++){
+        
+        if(unitButtons1[i].className === "mode1 selected"){
+            if(unitButtons1[i].textContent === "MHz")
+            oscillator1.value = (Number(stepValue1.value) * 10 + Number(oscillator1.value) * 10) / 10;
+            if(unitButtons1[i].textContent === "KHz" ){
+                oscillator1.value = ((Number((stepValue1.value)/1000) * 10 + Number(oscillator1.value) * 10) / 10).toFixed(4);
+            
+            }
+        }
+    }
+   
 }
 
 function decreaseFrequencyOfOscillator1ByStep() {
