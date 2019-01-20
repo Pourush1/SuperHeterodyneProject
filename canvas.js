@@ -5,7 +5,7 @@ var canvas4 = document.querySelector('#canvas4');
 
 var ctx1 = canvas1.getContext('2d');
 var ctx2 = canvas2.getContext('2d');
-var ctx3 = canvas3.getContext('2d'); 
+var ctx3 = canvas3.getContext('2d');
 var ctx4 = canvas4.getContext("2d");
 
 //constant points in the window
@@ -46,7 +46,6 @@ var theta, //angle set according to intensity range from 0 - 10 i.e min 0 = 226 
 
 // This is the source of frequency and intensity from the Source Table
 var datas = document.querySelectorAll('.frequency');
-console.log(datas);
 var intensities = document.querySelectorAll('.intensity');
 
 //This is the source of the first Oscillator value
@@ -94,7 +93,11 @@ function reset() {
     // drawWave(firstWaveScale);
 
     init();
-    drawPreviousSignalLines();
+    // drawPreviousSignalLines();
+}
+
+function resetCanvas2() {
+    ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
 }
 
 function multiDimensionalUnique(arr) {
@@ -266,21 +269,38 @@ function setupUnitButtons1() {
 
 var storecavnas3Data = [];
 function getFrequencyIntensityValue() {
-    
+
     var frequencyValue = frequencyValues['frequency'];
     var intensityValue = intensityValues['intensity'];
 
     var signalPoint = (frequencyValue - startingWidthCoordinateWave1) / 1.1;
     var intensityAmplitude = intensityValue * heightPixel;
 
-    var a1 = [ctx3, signalPoint];
 
-   
-    reset(); //clears the canvas and draws the initial configuration
+    //    var a1 = [ctx3, signalPoint, frequencyPoint.point];
+
+    if (array === undefined || array.length === 0) {
+
+        var obj = {
+            lineData: [ctx3, signalPoint]
+        }
+        array.push(obj);
+    }
+    else {
+        reset();
+        array = [];
+        var obj = {
+            lineData: [ctx3, signalPoint]
+        }
+        array.push(obj);
+    }
+
+
+    //    reset(); //clears the canvas and draws the initial configuration
     drawSignalLine(ctx3, signalPoint, intensityAmplitude);
     writeText(ctx3, frequencyValue, signalPoint, intensityAmplitude);
 
-    return a1;
+    //    return a1;
 }
 
 function writeText(ctx, text, x, y) {
@@ -313,28 +333,16 @@ function drawTextBox(ctx, text, x, y) {
 function drawSignalLine(ctx, signalPoint, intensityAmplitude) {
     var color = "";
     if (frequencyPoint.point === 'A') {
-        // if(array.length === 3){
-        //     array.length = 0; //emtying an array
-        // }
         color = 'red';
     }
     else if (frequencyPoint.point === 'B') {
-        // if(array.length === 6){
-        //     array.splice(3,array.length - 3);
-        // }
         color = 'green';
     }
     else if (frequencyPoint.point === 'C') {
-        // if(array.length === 9){
-        //     array.splice(6,array.length - 6);
-        // }
         color = 'blue';
 
     }
     else if (frequencyPoint.point === 'D') {
-        // if(array.length === 12){
-        //     array.splice(9,array.length - 9);
-        // }
         color = 'yellow';
     }
     ctx.beginPath();
@@ -345,57 +353,56 @@ function drawSignalLine(ctx, signalPoint, intensityAmplitude) {
     ctx.closePath();
 }
 
-function drawPreviousSignalLines(){
+function drawPreviousSignalLines() {
 
-let newArray = multiDimensionalUnique(array);
-console.log(newArray);
-console.log(newArray.length);
-if (newArray.length >= 3 && newArray.length < 6) {
-    if (frequencyPoint.point === 'A') {
+    let newArray = multiDimensionalUnique(array);
+    console.log(newArray.length);
+    if (newArray.length >= 3 && newArray.length < 6) {
+        if (frequencyPoint.point === 'A') {
             newArray.length = 0; //emtying an array
-    }
-    else{
-        drawRed();
-    }
-    
-}
-if (newArray.length >= 6 && newArray.length < 9) {
-    drawRedAndGreen();
-}
-if (newArray.length >= 9 && newArray.length < 12) {
-    drawRedGreenAndBlue();
-}
-
-function drawRed() {
-    // if (newArray.length >= 3 && newArray.length < 6) {
-    for (var i = 0; i < 3; i++) {
-        if(i === 2){
-            ctx1.save();
-            ctx1.translate(100,0);
         }
-        drawNewLine(newArray[i], 'red');
-        ctx1.restore();
-    }
-}
+        else {
+            drawRed();
+        }
 
-function drawRedAndGreen() {
-    // if (newArray.length >= 6 && newArray.length < 9) {
-    drawRed();
-    for (var i = 3; i < 6; i++) {
-        drawNewLine(newArray[i], 'green');
     }
-    // }
-}
-
-function drawRedGreenAndBlue() {
-    // if (newArray.length >= 9 && newArray.length < 12) {
-    drawRedAndGreen();
-
-    for (var i = 6; i < 9; i++) {
-        drawNewLine(newArray[i], 'blue');
+    if (newArray.length >= 6 && newArray.length < 9) {
+        drawRedAndGreen();
     }
-    //   }
-}
+    if (newArray.length >= 9 && newArray.length < 12) {
+        drawRedGreenAndBlue();
+    }
+
+    function drawRed() {
+        // if (newArray.length >= 3 && newArray.length < 6) {
+        for (var i = 0; i < 3; i++) {
+            if (i === 2) {
+                ctx1.save();
+                ctx1.translate(100, 0);
+            }
+            drawNewLine(newArray[i], 'red');
+            ctx1.restore();
+        }
+    }
+
+    function drawRedAndGreen() {
+        // if (newArray.length >= 6 && newArray.length < 9) {
+        drawRed();
+        for (var i = 3; i < 6; i++) {
+            drawNewLine(newArray[i], 'green');
+        }
+        // }
+    }
+
+    function drawRedGreenAndBlue() {
+        // if (newArray.length >= 9 && newArray.length < 12) {
+        drawRedAndGreen();
+
+        for (var i = 6; i < 9; i++) {
+            drawNewLine(newArray[i], 'blue');
+        }
+        //   }
+    }
 }
 
 function drawNewLine(arr, colorValue) {
@@ -411,28 +418,37 @@ function drawNewLine(arr, colorValue) {
     ctx.closePath();
 
 }
-
+let array2 = [];
 function drawOscillatorFrequency() {
     //   reset(); //clears the canvas and draws the initial configuration
-    var oscillator1frequencyValue;
-    if (toggleUnit1.textContent === 'MHz') {
-        oscillator1frequencyValue = oscillator1.value;
-    }
-
-    else if (toggleUnit1.textContent === 'KHz') {
-        oscillator1frequencyValue = oscillator1.value / 1000;
-    }
-
+    var oscillator1frequencyValue = oscillator1.value; 
+    array2.push(oscillator1frequencyValue);
     var oscillatorPoint = (oscillator1frequencyValue - startingWidthCoordinateWave1) / 1.1;
-    var a1 = getFrequencyIntensityValue(); // draws the signal line in the 3rd canvas
+    //    var a1 = getFrequencyIntensityValue(); // draws the signal line in the 3rd canvas
 
-    array.push(a1);
-    drawOscillatorLine(ctx3, oscillatorPoint); //draws osicallator line in 3rd canvas
+    //   array.push(a1);
+    if (array2.length === 2) {
+        if (array2[1] !== array2[0]) {
+            array2.shift();
+            getFrequencyIntensityValue();
+            drawOscillatorLine(ctx3, oscillatorPoint);
+
+        }
+    }
+    else {
+        drawOscillatorLine(ctx3, oscillatorPoint); //draws osicallator line in 3rd canvas
+    }
+   drawWaveFixedFilterAndShiftedSourceLineInCanvas2(oscillator1frequencyValue);
+
+}
+
+function drawWaveFixedFilterAndShiftedSourceLineInCanvas2(oscillator1frequencyValue){
+
     drawWave(secondWaveScale, oscillator1frequencyValue); //draws wave in 2nd canvas
     drawFixedLowPassFilter();
     shiftSourceFrequency(oscillator1frequencyValue); //shifts the source frequency according to oscillator 1
 
-}
+    }
 
 function drawOscillatorLine(ctx, oscillatorPoint) {
     ctx.beginPath();
@@ -480,28 +496,43 @@ function shiftSourceFrequency(oscillatorFrequency) {
     ctx2.moveTo(exactShiftedPointToScale, heightCoordinate);
     var shiftedIntensityValue = intensityValues['intensity'] * heightPixel;
 
-    var a2 = [ctx2, exactShiftedPointToScale];
-    array.push(a2);
+    // var a2 = [ctx2, exactShiftedPointToScale];
+    // array.push(a2);
+    if(array[array.length-1].lineDataCanvas2[0] === ctx2){
+        array.pop();
+    }
+    var obj = {
+        lineDataCanvas2: [ctx2, exactShiftedPointToScale]
+    }
+    array.push(obj);
     drawSignalLine(ctx2, exactShiftedPointToScale, shiftedIntensityValue);
 
     //logic to print the text
     writeText(ctx2, shiftedPoint, exactShiftedPointToScale, shiftedIntensityValue);
 }
-
+var array3 = [];
 function drawOscillator2Frequency() {
-    var oscillator2frequencyValue;
-    if (toggleUnit.textContent === 'MHz') {
-        oscillator2frequencyValue = oscillator2.value;
-    }
-    else if (toggleUnit.textContent === 'KHz') {
-        oscillator2frequencyValue = oscillator2.value / 1000;
-    }
-
+    var oscillator2frequencyValue = oscillator2.value;
+    
     var oscillatorPoint = (oscillator2frequencyValue - 0) / secondWaveScale;
+    array3.push(oscillator2frequencyValue);
+
+    if(array3.length === 2){
+        if (array3[1] !== array3[0]) {
+            resetCanvas2();
+            array3.shift();
+            drawOscillatorLine(ctx2, oscillatorPoint);
+            drawWaveFixedFilterAndShiftedSourceLineInCanvas2(oscillator1.value);
+
+        }
+        else{
+            drawOscillatorLine(ctx2, oscillatorPoint);
+        }
+    }
 
 
-    drawOscillatorFrequency();
-    drawOscillatorLine(ctx2, oscillatorPoint);
+ //   drawOscillatorFrequency();
+ //   drawOscillatorLine(ctx2, oscillatorPoint);
     drawWave(thirdWaveScale, oscillator2frequencyValue);
     drawFixedFilter2();
     shiftSourceFrequencyAccordingToOscillator2(oscillator2frequencyValue);
@@ -547,9 +578,16 @@ function shiftSourceFrequencyAccordingToOscillator2(oscillatorFrequency) {
     var shiftedIntensityValue = intensityValues['intensity'] * heightPixel;
 
     // var a3 = [ctx1, exactShiftedPointToScale];
+    if(array[array.length-1].lineDataCanvas2[0] === ctx1){
+        array.pop();
+    }
+    var obj = {
+        lineDataCanvas1: [ctx1, finalShiftedPoint + 100];
+    }
 
-    var a3 = [ctx1, finalShiftedPoint + 100];
-    array.push(a3);
+    // var a3 = [ctx1, finalShiftedPoint + 100];
+    // array.push(a3);
+    array.push(obj);
 
     drawSignalLine(ctx1, finalShiftedPoint, shiftedIntensityValue);
 
