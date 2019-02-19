@@ -7,7 +7,10 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
         crossorigin="anonymous">
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
     <script src="libraries/CanvasInput.min.js"></script>
+
 
     <style type="text/css">
         canvas {
@@ -54,23 +57,23 @@
                     </tr>
                     <tr>
                         <td>A</td>
-                        <td>FREQ <input type="text" maxlength="8" id="frequencyA" class="frequency" key='A'></td>
-                        <td>INTENSITY <input type="text" id="intensityA" class='intensity' key='A'></td>
+                        <td>FREQ <input type="text" maxlength="8" id="frequencyA" class="frequency clsSources" key='A'></td>
+                        <td>INTENSITY <input type="text" id="intensityA" class='intensity clsSources' key='A'></td>
                     </tr>
                     <tr>
                         <td>B</td>
-                        <td>FREQ <input type="text" id="frequencyB" class="frequency" key='B'></td>
-                        <td>INTENSITY <input type="text" id="intensityB" class="intensity" key='B'></td>
+                        <td>FREQ <input type="text" id="frequencyB" class="frequency clsSources" key='B'></td>
+                        <td>INTENSITY <input type="text" id="intensityB" class="intensity clsSources" key='B'></td>
                     </tr>
                     <tr>
                         <td>C</td>
-                        <td>FREQ <input type="text" id="frequencyC" class="frequency" key='C'></td>
-                        <td>INTENSITY <input type="text" id="intensityC" class="intensity" key='C'></td>
+                        <td>FREQ <input type="text" id="frequencyC" class="frequency clsSources" key='C'></td>
+                        <td>INTENSITY <input type="text" id="intensityC" class="intensity clsSources" key='C'></td>
                     </tr>
                     <tr>
                         <td>D</td>
-                        <td>FREQ <input type="text" id="frequencyD" class="frequency" key='D'></td>
-                        <td>INTENSITY <input type="text" id="intensityD" class="intensity" key='D'></td>
+                        <td>FREQ <input type="text" id="frequencyD" class="frequency clsSources" key='D'></td>
+                        <td>INTENSITY <input type="text" id="intensityD" class="intensity clsSources" key='D'></td>
                     </tr>
                 </table>
                 <!-- <button id="submit">Submit</button> -->
@@ -171,15 +174,6 @@
 
 
                             <select id="stepValue1">
-                                <!-- <option>0.1</option>
-                                <option>0.2</option>
-                                <option>0.3</option>
-                                <option>0.4</option>
-                                <option>0.5</option>
-                                <option>0.6</option>
-                                <option>0.7</option>
-                                <option>0.8</option>
-                                <option>0.9</option> -->
                                 <option>5</option>
                                 <option>10</option>
                             </select>
@@ -197,7 +191,7 @@
         </div>
     </div>
 
-    <button id="resetButton">RESET</button>
+    <!-- <button id="resetButton">RESET</button> -->
 
     <script src="canvas.js"></script>
 
